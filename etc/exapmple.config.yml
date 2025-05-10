@@ -4,14 +4,14 @@ database:
   port: 5432
   user: postgres 
   password: postgres
-  database: own_game
+  database: sveta
 web:
   host: 127.0.0.1
   port: 8000
 bot:
-  token: 6571525696:AAFViz2s3HhCg--4mT5YBuQjIrIdzUCl-ok
+  token:
 session:
-  key: CaY5iCkYtN7DqXdiYK1BvmGrQuaSA4Tl4bEk9my0jc0=
+  key:
 admin:
   email: admin@admin.com
   password: admin
