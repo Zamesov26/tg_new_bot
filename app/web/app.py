@@ -60,16 +60,15 @@ def setup_app(config_path: str) -> Application:
     setup_logging(app)
     setup_config(app, config_path)
     session_setup(app, EncryptedCookieStorage(app.config.session.key))
-    setup_aiohttp_apispec(
-        app,
-        title="TG own-game Bot",
-        url="/docs/json",
-        swagger_path="/docs",
-        # prefix="/v1",
-    )
-    setup_routes(app)
+    # setup_aiohttp_apispec(
+    #     app,
+    #     title="TG own-game Bot",
+    #     url="/docs/json",
+    #     swagger_path="/docs",
+    #     # prefix="/v1",
+    # )
+    # setup_routes(app)
     setup_middlewares(app)
     setup_store(app)
-    # setup_game_bot(app)
     setup_sveta(app)
     return app

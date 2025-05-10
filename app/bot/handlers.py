@@ -54,10 +54,12 @@ class AddedToChatHandler(BaseHandler):
     ) -> tuple["UpdateBase", Callable] | None:
         if (
             update.my_chat_member
-            and update.my_chat_member.old_chat_member.status in ["left", "kicked"]
+            and update.my_chat_member.old_chat_member.status
+            in ("left", "kicked")
             and update.my_chat_member.new_chat_member.status == "member"
         ):
             return UpdateMyChatMember(update), self.callback
+
         return None
 
 
@@ -68,7 +70,7 @@ class CallbackQueryHander(BaseHandler):
 
     def check(
         self, update: "Update", *args, **kwargs
-    ) -> tuple["UpdateBase", Callable] | None:
+    ) -> tuple["UpdateCallBackQuery", Callable] | None:
         if (
             update.callback_query
             and update.callback_query.data

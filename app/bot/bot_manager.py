@@ -52,13 +52,7 @@ class BotManager:
         chat_id = get_chat_id_from_update(update)
         db_session: AsyncSession = self.app.database.session()
         async with db_session.begin():
-            game = await self.app.store.game.get_active_game_in_chat(
-                db_session, chat_id
-            )
-            if game:
-                state = game.state
-            else:
-                state = None
+            state = None
             for handler in self.handlers:
                 res = handler.check(update, state=state)
                 if res:
@@ -66,10 +60,8 @@ class BotManager:
                     self.logger.info(
                         f"run update handler {update.update_id}, state={state}"
                     )
-                    await callback(
-                        update_object, self.app.store, db_session, game
-                    )
-                    self.logger.info(
-                        f"end update handler {update.update_id} state={game.state if game else None}"
-                    )
+                    await callback(update_object, self.app.store, db_session)
+                    # self.logger.info(
+                    #     f"end update handler {update.update_id} state={game.state if game else None}"
+                    # )
                     break
