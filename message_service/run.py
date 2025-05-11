@@ -1,8 +1,7 @@
 import asyncio
 import json
+
 import aio_pika
-
-
 from accessor import TgApiAccessor
 
 

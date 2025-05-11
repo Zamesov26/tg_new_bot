@@ -2,9 +2,7 @@ from app.bot.utils import inline_keyboard_builder
 
 
 async def feedback_input(update: "UpdateCallBackQuery", store: "Store", *args):
-    text = (
-        "TODO: нужно подумтаь, что именно мы хотим, просто взять телефон, предложить контакты и т.д."
-    )
+    text = "TODO: нужно подумтаь, что именно мы хотим, просто взять телефон, предложить контакты и т.д."
     keyboard = inline_keyboard_builder(
         [
             [("🔙 меню", f"main_menu")],

@@ -1,6 +1,6 @@
 import json
-from logging import getLogger
 import typing
+from logging import getLogger
 from urllib.parse import urlencode, urljoin
 
 from aiohttp import TCPConnector
@@ -8,11 +8,7 @@ from aiohttp.client import ClientSession
 from pydantic import ValidationError
 
 from app.base.base_accessor import BaseAccessor
-from app.tg_api.models import (
-    InlineKeyboardMarkup,
-    Message,
-    Update,
-)
+from app.tg_api.models import InlineKeyboardMarkup, Message, Update
 from app.tg_api.poller import Poller
 
 if typing.TYPE_CHECKING:

@@ -16,8 +16,15 @@ async def programs(update: "UpdateCallBackQuery", store: "Store", *args):
     )
     keyboard = inline_keyboard_builder(
         [
-            [("🫧 Бабл шоу", f"buble"), ("🫧+🎭 Комбо", f"combo")],
-            [("🧸 Аниматор", f"aminator"), ("🎁 Акции", f"promo")],
+            [
+                ("🫧 Бабл шоу", "viewing_details:buble"),
+                ("🫧+🎭 Комбо", "viewing_details:combo"),
+            ],
+            [
+                ("🧸 Аниматор", "viewing_details:aminator"),
+                ("🎁 Акции", "promo"),
+            ],
+            [("🔙 Назад", "main_menu")],
         ]
     )
     await store.tg_api.send_message(
@@ -25,15 +32,15 @@ async def programs(update: "UpdateCallBackQuery", store: "Store", *args):
         text=text,
         reply_markup=keyboard,
     )
-    
+
+
 async def viewing_details(update: "UpdateCallBackQuery", store: "Store", *args):
-    text = (
-        "показываем описание"
-    )
+    _, program = update.callback_query.data.split(":")
+    text = f"показываем описание {program}"
     keyboard = inline_keyboard_builder(
         [
             [("✅ Заказать", f"entering_date")],
-            [("🔙 Назад", f"choosing_program")],
+            [("🔙 Программы", f"choosing_program")],
         ]
     )
     await store.tg_api.send_message(
@@ -48,7 +55,7 @@ async def entering_date(update: "UpdateCallBackQuery", store: "Store", *args):
     text = "TODO: Еще нудо подумать(дата, время, адрес, сколько детей, доп настройки(персонаж)"
     keyboard = inline_keyboard_builder(
         [
-            [("🔙 Назад", f"viewing_details")],
+            [("🔙 Программы", f"choosing_program")],
         ]
     )
 

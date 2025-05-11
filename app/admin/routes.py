@@ -1,7 +1,6 @@
 import typing
 
-from app.admin.views import AdminCurrentView
-from app.admin.views import AdminLoginView
+from app.admin.views import AdminCurrentView, AdminLoginView
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application

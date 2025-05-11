@@ -3,13 +3,8 @@ from urllib.parse import urlencode, urljoin
 
 from aiohttp import TCPConnector
 from aiohttp.client import ClientSession
+from models import InlineKeyboardMarkup, Message, Update
 from pydantic import ValidationError
-
-from models import (
-    InlineKeyboardMarkup,
-    Message,
-    Update,
-)
 
 TOKEN = "6571525696:AAExhmgaO0zfqIAAzhgnKRBKxQ3jDbsa8ng"
 

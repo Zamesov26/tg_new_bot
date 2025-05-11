@@ -1,6 +1,7 @@
 from enum import Enum
-from sqlalchemy import Enum as SQLEnum
+
 from sqlalchemy import VARCHAR
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import BIGINT
 from sqlalchemy.orm import Mapped, mapped_column
 

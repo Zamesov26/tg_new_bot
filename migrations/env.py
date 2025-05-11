@@ -4,9 +4,9 @@ from os.path import abspath, dirname
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from app.admin.models import AdminModel
 from app.config import load_config
 from app.database.sqlalchemy_base import BaseModel
-from app.admin.models import AdminModel
 from app.users.models import User
 
 # this is the Alembic Config object, which provides
