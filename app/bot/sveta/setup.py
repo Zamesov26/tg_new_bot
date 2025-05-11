@@ -1,9 +1,15 @@
 import typing
 
-from app.bot.handlers import (AddedToChatHandler, CallbackQueryHander,
-                              CommandHandler)
-from app.bot.sveta.handlers.choosing_program import (entering_date, programs,
-                                                     viewing_details)
+from app.bot.handlers import (
+    AddedToChatHandler,
+    CallbackQueryHander,
+    CommandHandler,
+)
+from app.bot.sveta.handlers.choosing_program import (
+    entering_date,
+    programs,
+    viewing_details,
+)
 from app.bot.sveta.handlers.feedback_input import feedback_input
 from app.bot.sveta.handlers.general import bot_help, say_hello
 from app.bot.sveta.handlers.main_menu import main_menu

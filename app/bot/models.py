@@ -2,8 +2,12 @@ import typing
 from abc import ABC, abstractmethod
 
 if typing.TYPE_CHECKING:
-    from app.tg_api.models import (CallbackQuery, ChatMemberUpdated, Message,
-                                   Update)
+    from app.tg_api.models import (
+        CallbackQuery,
+        ChatMemberUpdated,
+        Message,
+        Update,
+    )
 
 
 class UpdateBase(ABC):

@@ -3,8 +3,11 @@ import typing
 from collections.abc import Callable
 
 from app.bot.filters import TextFilter
-from app.bot.models import (UpdateCallBackQuery, UpdateMessage,
-                            UpdateMyChatMember)
+from app.bot.models import (
+    UpdateCallBackQuery,
+    UpdateMessage,
+    UpdateMyChatMember,
+)
 
 if typing.TYPE_CHECKING:
     from app.bot.models import UpdateBase

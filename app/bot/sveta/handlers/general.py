@@ -4,8 +4,11 @@ from app.bot.utils import inline_keyboard_builder
 from app.tg_api.dataclasses import InlineKeyboardButton
 
 if typing.TYPE_CHECKING:
-    from app.bot.models import (UpdateCallBackQuery, UpdateMessage,
-                                UpdateMyChatMember)
+    from app.bot.models import (
+        UpdateCallBackQuery,
+        UpdateMessage,
+        UpdateMyChatMember,
+    )
     from app.store.store import Store
 
 

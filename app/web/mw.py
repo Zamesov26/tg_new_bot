@@ -1,8 +1,12 @@
 import json
 import typing
 
-from aiohttp.web_exceptions import (HTTPConflict, HTTPException, HTTPNotFound,
-                                    HTTPUnprocessableEntity)
+from aiohttp.web_exceptions import (
+    HTTPConflict,
+    HTTPException,
+    HTTPNotFound,
+    HTTPUnprocessableEntity,
+)
 from aiohttp.web_middlewares import middleware
 from aiohttp_apispec import validation_middleware
 from aiohttp_session import get_session
