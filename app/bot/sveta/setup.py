@@ -10,6 +10,7 @@ from app.bot.sveta.handlers.choosing_program import (
     programs,
     viewing_details,
 )
+from app.bot.sveta.handlers.delete_message import delete_message
 from app.bot.sveta.handlers.feedback_input import feedback_input
 from app.bot.sveta.handlers.general import bot_help, say_hello
 from app.bot.sveta.handlers.main_menu import main_menu
@@ -48,4 +49,8 @@ def setup_sveta(app: "Application"):
     # viewing_faq
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(viewing_faq, pattern="^viewing_faq")
+    )
+    # delete_message
+    app.store.bot_manager.handlers.append(
+        CallbackQueryHander(delete_message, pattern="^remove_message")
     )

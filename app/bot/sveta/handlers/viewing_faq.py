@@ -16,6 +16,9 @@ async def viewing_faq(update: "UpdateMessage", store: "Store", *args):
             [("🔙 Меню", "main_menu")],
         ]
     )
-    await store.tg_api.send_message(
-        chat_id=update.get_chat_id(), text=text, reply_markup=keyboard
+    await store.tg_api.edit_message_text(
+        chat_id=update.get_chat_id(),
+        message_id=update.get_message_id(),
+        text=text,
+        reply_markup=keyboard,
     )

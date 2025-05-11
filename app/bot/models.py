@@ -15,8 +15,10 @@ class UpdateBase(ABC):
     def __init__(self, update: "Update"):
         pass
 
-    @abstractmethod
     def get_chat_id(self):
+        pass
+
+    def get_message_id(self):
         pass
 
 
@@ -28,6 +30,9 @@ class UpdateCallBackQuery(UpdateBase):
 
     def get_chat_id(self):
         return self.callback_query.message.chat.id
+
+    def get_message_id(self):
+        return self.callback_query.message.message_id
 
 
 class UpdateMyChatMember(UpdateBase):
@@ -48,3 +53,6 @@ class UpdateMessage(UpdateBase):
 
     def get_chat_id(self):
         return self.message.chat.id
+
+    def get_message_id(self):
+        return self.message.message_id

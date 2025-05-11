@@ -5,7 +5,7 @@ from app.store import Store
 
 async def promo(update: "UpdateMessage", store: "Store", *args):
     text = (
-        "🎉 2 персонажа по цене одного — $200?\n"
+        "🎉 2 персонажа по цене одного — $200? действует до: 11.02.2024\n"
         "Идеально для больших компаний детей — двойное веселье за ту же цену! 😍\n"
         "(Обычно 1 персонаж — $200, а здесь сразу 2 🎭🎭) 🫧✨\n\n"
         "🎉 Праздник до 13:00 — скидка 20%\n"
@@ -17,6 +17,9 @@ async def promo(update: "UpdateMessage", store: "Store", *args):
             [("🔙 Программы", "choosing_program")],
         ]
     )
-    await store.tg_api.send_message(
-        chat_id=update.get_chat_id(), text=text, reply_markup=keyboard
+    await store.tg_api.edit_message_text(
+        chat_id=update.get_chat_id(),
+        message_id=update.get_message_id(),
+        text=text,
+        reply_markup=keyboard,
     )
