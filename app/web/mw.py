@@ -12,7 +12,6 @@ from aiohttp_apispec import validation_middleware
 from aiohttp_session import get_session
 from sqlalchemy.exc import IntegrityError
 
-from app.admin.models import admin_from_session
 from app.web.utils import error_json_response
 
 if typing.TYPE_CHECKING:

@@ -1,47 +1,61 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.bot.models import UpdateCallBackQuery
 from app.bot.utils import inline_keyboard_builder
 from app.store import Store
 
+TEMPLATE = """{title} - {price}
+{short_description}
+"""
+COUNT_COLUMNS = 2
 
-async def programs(update: "UpdateCallBackQuery", store: "Store", *args):
-    text = (
-        "🫧 Бабл шоу — $250\n"
-        "30–40 минут волшебства с пузырями, дымом, огнём и погружением в пузырь 💫\n\n"
-        "🫧+🎭 Комбо-программа — $380\n"
-        "1,5 часа: бабл шоу + активные игры, танцы и реквизит 🥳\n\n"
-        "🧸 Аниматор — $200\n"
-        "40 минут весёлых игр с любимым персонажем 🎈\n\n"
-        "🎁 Акции:\n"
-        "- 2 персонажа за $200\n"
-        "и другие..."
+
+def chunk_list(lst, chunk_size):
+    return [lst[i : i + chunk_size] for i in range(0, len(lst), chunk_size)]
+
+
+async def programs(
+    update: "UpdateCallBackQuery",
+    store: "Store",
+    db_session: AsyncSession,
+    *args,
+):
+    program_list = await store.program.get_all(db_session)
+    texts = []
+    buttons = []
+    for item in program_list:
+        texts.append(
+            TEMPLATE.format(
+                title=item.title,
+                price=item.price,
+                short_description=item.short_description,
+            )
+        )
+        buttons.append((item.title, "program_details:{id}".format(id=item.id)))
+
+    buttons = chunk_list(buttons, 2)
+    buttons.append(
+        [("🔙 Назад", "main_menu")],
     )
-    keyboard = inline_keyboard_builder(
-        [
-            [
-                ("🫧 Бабл шоу", "viewing_details:buble"),
-                ("🫧+🎭 Комбо", "viewing_details:combo"),
-            ],
-            [
-                ("🧸 Аниматор", "viewing_details:aminator"),
-                ("🎁 Акции", "promo"),
-            ],
-            [("🔙 Назад", "main_menu")],
-        ]
-    )
+    keyboard = inline_keyboard_builder(buttons)
+
     await store.tg_api.edit_message_text(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
-        text=text,
+        text="\n".join(texts),
         reply_markup=keyboard,
     )
 
 
-async def viewing_details(update: "UpdateCallBackQuery", store: "Store", *args):
+async def program_details(
+    update: "UpdateCallBackQuery",
+    store: "Store",
+    db_session: AsyncSession,
+    *args,
+):
     _, program = update.callback_query.data.split(":")
-    text = (
-        f"Показываем описание {program}, оно не будет обновляться, чтобы клиент мог полистать историю сообщений\n"
-        "Еще нужно подумать над добавлением фотографий"
-    )
+    program_item = await store.program.get_by_id(db_session, int(program))
+    text = program_item.description or program_item.short_description
     keyboard = inline_keyboard_builder(
         [
             [("✅ Заказать", f"entering_date")],

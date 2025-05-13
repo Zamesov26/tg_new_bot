@@ -13,7 +13,7 @@ async def main_menu(
     keyboard = inline_keyboard_builder(
         [
             [("🎭 Программы и заказ", "choosing_program")],
-            [("📸 Каталог персонажей", "TODO")],
+            [("🎁 Акции", "promo")],
             [("❓ Частые вопросы", "viewing_faq")],
             [("📞 Связаться с нами", "feedback_input")],
         ]

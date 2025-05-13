@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "kts-finale-project"
+name = "sveta_bot"
 version = "0.1.0"
 description = ""
 authors = ["Oleg Zamesov <o.zamesov@yandex.ru>"]

@@ -26,7 +26,7 @@ TextKeyBoard = typing.Annotated[
 
 
 def inline_keyboard_builder(
-    lst: list[list[tuple[str | int, str]]]
+    lst: list[list[tuple[str | int, str]]],
 ) -> InlineKeyboardMarkup:
     res_keyboard = []
     for row in lst:

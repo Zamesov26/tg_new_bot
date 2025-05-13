@@ -13,8 +13,8 @@ async def promo(update: "UpdateMessage", store: "Store", *args):
     )
     keyboard = inline_keyboard_builder(
         [
-            [("⬅️ Назад", "prev_questions"), ("➡️ Далее", "next_questions")],
-            [("🔙 Программы", "choosing_program")],
+            [("⬅️ Назад", "TODO"), ("➡️ Далее", "TODO")],
+            [("🔙 Меню", "main_menu")],
         ]
     )
     await store.tg_api.edit_message_text(

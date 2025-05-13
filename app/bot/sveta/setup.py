@@ -7,8 +7,8 @@ from app.bot.handlers import (
 )
 from app.bot.sveta.handlers.choosing_program import (
     entering_date,
+    program_details,
     programs,
-    viewing_details,
 )
 from app.bot.sveta.handlers.delete_message import delete_message
 from app.bot.sveta.handlers.feedback_input import feedback_input
@@ -33,7 +33,7 @@ def setup_sveta(app: "Application"):
         CallbackQueryHander(programs, pattern="^choosing_program")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(viewing_details, pattern="^viewing_details:")
+        CallbackQueryHander(program_details, pattern="^program_details:")
     )
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(entering_date, pattern="^entering_date")
