@@ -19,15 +19,20 @@ async def main_menu(
         ]
     )
     if isinstance(update, UpdateCallBackQuery):
-        await store.tg_api.edit_message_text(
+        photo_result = await store.tg_api.edit_message_media(
             chat_id=update.get_chat_id(),
             message_id=update.get_message_id(),
-            text=text,
+            file_id="AgACAgIAAxkDAAIev2gkRUYxl76b6bLhz1jAuqdSLzs-AAJt7DEbtLQoSUHuX48UhUsSAQADAgADeAADNgQ",
+            file_path="images/logo.png",
+            caption=text,
             reply_markup=keyboard,
         )
+        photo_result
     else:
-        await store.tg_api.send_message(
+        photo_result = await store.tg_api.send_photo(
             chat_id=update.get_chat_id(),
-            text=text,
+            caption=text,
+            path_image="images/logo.png",
             reply_markup=keyboard,
         )
+        photo_result

@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config, pool
 
 from app.config import load_config
 from app.database.sqlalchemy_base import BaseModel
+from app.medias.models import Media
 from app.programs.models import Programs
 from app.users.models import User
 

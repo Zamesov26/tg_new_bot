@@ -4,7 +4,7 @@ from app.bot.models import UpdateCallBackQuery
 from app.bot.utils import inline_keyboard_builder
 from app.store import Store
 
-TEMPLATE = """{title} - {price}
+TEMPLATE = """{title} - {price}$
 {short_description}
 """
 COUNT_COLUMNS = 2
@@ -39,12 +39,20 @@ async def programs(
     )
     keyboard = inline_keyboard_builder(buttons)
 
-    await store.tg_api.edit_message_text(
+    # TODO: надо подумать как это сделать универсально, чтобы можно было использовать во всех други ручках
+    # TODO: получить картинку из базы
+    #   как понимаем какую картинку нужно вернуть?
+    #   наверно может быть ситуация когда картинка не нужна вообще
+    # TODO: подставить данные в функцию
+    res_photo = await store.tg_api.edit_message_media(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
-        text="\n".join(texts),
+        file_id="AgACAgIAAxkDAAIewWgkRhfhhz1IQa6nzL5GIKyNM0QrAAJd9DEbGhkgSRE3-vJU6jNjAQADAgADeAADNgQ",
+        file_path="images/programs.png",
+        caption="\n".join(texts),
         reply_markup=keyboard,
     )
+    # TODO: если нету file_id то добавить в базу
 
 
 async def program_details(
@@ -62,12 +70,34 @@ async def program_details(
             [("❌ Убрать", f"remove_message")],
         ]
     )
-    await store.tg_api.edit_message_text(
+    # TODO: удалять прошлое сообщение либо хотябы убирать из него клавиатуру.
+    await store.tg_api.send_media_group(
         chat_id=update.get_chat_id(),
-        message_id=update.get_message_id(),
-        text=text,
+        media_items=[
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkDAAIewmgkTFVQwFE2vyUqMmVUbHQOO6UTAALI7DEbtLQoSWaxos7VuSZ6AQADAgADcwADNgQ",
+                "caption": text,
+            },
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkDAAIewWgkRhfhhz1IQa6nzL5GIKyNM0QrAAJd9DEbGhkgSRE3-vJU6jNjAQADAgADeAADNgQ",
+                # "caption": "Фото по ссылке"
+            },
+            {
+                "type": "photo",
+                "file_id": "AgACAgIAAxkDAAIev2gkRUYxl76b6bLhz1jAuqdSLzs-AAJt7DEbtLQoSUHuX48UhUsSAQADAgADeAADNgQ",
+                # "caption": "Фото с файла"
+            },
+        ],
         reply_markup=keyboard,
     )
+    # await store.tg_api.edit_message_text(
+    #     chat_id=update.get_chat_id(),
+    #     message_id=update.get_message_id(),
+    #     text=text,
+    #     reply_markup=keyboard,
+    # )
     keyboard = inline_keyboard_builder(
         [
             [("🔙 Программы", f"choosing_program")],

@@ -13,13 +13,15 @@ async def promo(update: "UpdateMessage", store: "Store", *args):
     )
     keyboard = inline_keyboard_builder(
         [
-            [("⬅️ Назад", "TODO"), ("➡️ Далее", "TODO")],
+            # [("⬅️ Назад", "TODO"), ("➡️ Далее", "TODO")],
             [("🔙 Меню", "main_menu")],
         ]
     )
-    await store.tg_api.edit_message_text(
+    return await store.tg_api.edit_message_media(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
-        text=text,
+        caption=text,
+        file_id="AgACAgIAAxkDAAIewmgkTFVQwFE2vyUqMmVUbHQOO6UTAALI7DEbtLQoSWaxos7VuSZ6AQADAgADcwADNgQ",
+        file_path="images/promo.png",
         reply_markup=keyboard,
     )
