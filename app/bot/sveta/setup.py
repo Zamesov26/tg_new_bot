@@ -14,6 +14,7 @@ from app.bot.sveta.handlers.delete_message import delete_message
 from app.bot.sveta.handlers.feedback_input import feedback_input
 from app.bot.sveta.handlers.general import bot_help, say_hello
 from app.bot.sveta.handlers.main_menu import main_menu
+from app.bot.sveta.handlers.menu_item import callback_menu_item
 from app.bot.sveta.handlers.promo import promo
 from app.bot.sveta.handlers.viewing_faq import viewing_faq
 
@@ -53,4 +54,8 @@ def setup_sveta(app: "Application"):
     # delete_message
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(delete_message, pattern="^remove_message")
+    )
+    
+    app.store.bot_manager.handlers.append(
+        CallbackQueryHander(callback_menu_item, pattern="^menu_item")
     )
