@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "users",
     "programs",
     "medias",
+    "promos",
 ]
 
 MIDDLEWARE = [

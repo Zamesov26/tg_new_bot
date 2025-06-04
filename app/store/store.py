@@ -15,6 +15,7 @@ class Store:
 
         self.tg_api = TgApiAccessor(app)
         self.bot_manager = BotManager(app)
+        # TODO может с этими акцессорами погорячился и они не нужны
         self.user = UserAccessor(app)
         self.program = ProgramAccessor(app)
 

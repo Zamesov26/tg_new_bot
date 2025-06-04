@@ -8,6 +8,7 @@ from app.config import load_config
 from app.database.sqlalchemy_base import BaseModel
 from app.medias.models import Media
 from app.programs.models import Programs
+from app.promo.models import Promo
 from app.users.models import User
 
 # this is the Alembic Config object, which provides
