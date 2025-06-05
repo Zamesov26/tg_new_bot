@@ -60,7 +60,7 @@ class BotManager:
                     self.logger.info(
                         f"run update handler {update.update_id}, state={state}"
                     )
-                    await callback(update_object, self.app.store, db_session)
+                    print(await callback(update_object, self.app.store, db_session))
                     # self.logger.info(
                     #     f"end update handler {update.update_id} state={game.state if game else None}"
                     # )

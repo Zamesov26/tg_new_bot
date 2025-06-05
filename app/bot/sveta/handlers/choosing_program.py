@@ -44,10 +44,10 @@ async def programs(
     #   как понимаем какую картинку нужно вернуть?
     #   наверно может быть ситуация когда картинка не нужна вообще
     # TODO: подставить данные в функцию
-    res_photo = await store.tg_api.edit_message_media(
+    return await store.tg_api.edit_message_media(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
-        file_id="AgACAgIAAxkDAAIewWgkRhfhhz1IQa6nzL5GIKyNM0QrAAJd9DEbGhkgSRE3-vJU6jNjAQADAgADeAADNgQ",
+        # file_id="AgACAgIAAxkDAAIewWgkRhfhhz1IQa6nzL5GIKyNM0QrAAJd9DEbGhkgSRE3-vJU6jNjAQADAgADeAADNgQ",
         file_path="images/programs.png",
         caption="\n".join(texts),
         reply_markup=keyboard,

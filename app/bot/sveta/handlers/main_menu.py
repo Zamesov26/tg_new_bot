@@ -22,7 +22,7 @@ async def main_menu(
         photo_result = await store.tg_api.edit_message_media(
             chat_id=update.get_chat_id(),
             message_id=update.get_message_id(),
-            file_id="AgACAgIAAxkDAAIev2gkRUYxl76b6bLhz1jAuqdSLzs-AAJt7DEbtLQoSUHuX48UhUsSAQADAgADeAADNgQ",
+            # file_id="AgACAgIAAxkDAAIev2gkRUYxl76b6bLhz1jAuqdSLzs-AAJt7DEbtLQoSUHuX48UhUsSAQADAgADeAADNgQ",
             file_path="images/logo.png",
             caption=text,
             reply_markup=keyboard,

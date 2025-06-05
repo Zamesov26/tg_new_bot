@@ -37,7 +37,7 @@ async def promo(
             chat_id=update.get_chat_id(),
             message_id=update.get_message_id(),
             caption="Нету действующийх акций",
-            file_id="AgACAgIAAxkDAAIewmgkTFVQwFE2vyUqMmVUbHQOO6UTAALI7DEbtLQoSWaxos7VuSZ6AQADAgADcwADNgQ",
+            # file_id="AgACAgIAAxkDAAIewmgkTFVQwFE2vyUqMmVUbHQOO6UTAALI7DEbtLQoSWaxos7VuSZ6AQADAgADcwADNgQ",
             file_path="images/promo.png",
             reply_markup=keyboard,
         )
@@ -55,7 +55,7 @@ async def promo(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
         caption='---------------------------\n'.join(texts),
-        file_id="AgACAgIAAxkDAAIewmgkTFVQwFE2vyUqMmVUbHQOO6UTAALI7DEbtLQoSWaxos7VuSZ6AQADAgADcwADNgQ",
+        # file_id="AgACAgIAAxkDAAIewmgkTFVQwFE2vyUqMmVUbHQOO6UTAALI7DEbtLQoSWaxos7VuSZ6AQADAgADcwADNgQ",
         file_path="images/promo.png",
         reply_markup=keyboard,
     )
