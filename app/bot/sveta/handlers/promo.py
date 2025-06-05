@@ -44,17 +44,18 @@ async def promo(
             chat_id=update.get_chat_id(),
             message_id=update.get_message_id(),
             caption="Нет действующийх акций",
-            file_id=image_file.file_id,
+            file_id=image_file.file_id if image_file else None,
             file_path=message_image_path,
             reply_markup=keyboard,
         )
-        promo_image = Media(
-            title="promo_image",
-            file_id=answer['result']['photo'][0]["file_id"],
-            file_path=message_image_path
-        )
-        db_session.add(promo_image)
-        await db_session.commit()
+        if not image_file:
+            promo_image = Media(
+                title="promo_image",
+                file_id=answer['result']['photo'][0]["file_id"],
+                file_path=message_image_path
+            )
+            db_session.add(promo_image)
+            await db_session.commit()
         return answer
     texts = []
     for promo_item in promos:
@@ -76,11 +77,12 @@ async def promo(
         file_path=message_image_path,
         reply_markup=keyboard,
     )
-    promo_image = Media(
-        title="promo_image",
-        file_id=answer['result']['photo'][0]["file_id"],
-        file_path=message_image_path
-    )
-    db_session.add(promo_image)
-    await db_session.commit()
+    if not image_file:
+        promo_image = Media(
+            title="promo_image",
+            file_id=answer['result']['photo'][0]["file_id"],
+            file_path=message_image_path
+        )
+        db_session.add(promo_image)
+        await db_session.commit()
     return answer

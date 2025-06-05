@@ -91,6 +91,7 @@ class TgApiAccessor(BaseAccessor):
         chat_id: int,
         path_image: str,
         caption: str | None = None,
+        file_id: str | None = None,
         reply_markup: InlineKeyboardMarkup | None = None,
     ):
         params = {"chat_id": chat_id, "caption": caption or ""}
@@ -101,7 +102,7 @@ class TgApiAccessor(BaseAccessor):
         data = aiohttp.FormData()
         data.add_field(
             name="photo",
-            value=open(path_image, "rb"),
+            value=file_id or open(path_image, "rb"),
             filename="file.png",
             content_type="image/png",
         )

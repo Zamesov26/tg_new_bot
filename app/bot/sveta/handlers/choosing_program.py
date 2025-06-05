@@ -1,7 +1,9 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.bot.models import UpdateCallBackQuery
 from app.bot.utils import inline_keyboard_builder
+from app.medias.models import Media
 from app.store import Store
 
 TEMPLATE = """{title} - {price}$
@@ -20,6 +22,7 @@ async def programs(
     db_session: AsyncSession,
     *args,
 ):
+    message_image_path = "images/programs.png"
     program_list = await store.program.get_all(db_session)
     texts = []
     buttons = []
@@ -39,20 +42,28 @@ async def programs(
     )
     keyboard = inline_keyboard_builder(buttons)
 
-    # TODO: надо подумать как это сделать универсально, чтобы можно было использовать во всех други ручках
-    # TODO: получить картинку из базы
-    #   как понимаем какую картинку нужно вернуть?
-    #   наверно может быть ситуация когда картинка не нужна вообще
-    # TODO: подставить данные в функцию
-    return await store.tg_api.edit_message_media(
+    image_file = (
+        await db_session.execute(
+            select(Media).where(Media.file_path == message_image_path)
+        )
+    ).scalar_one_or_none()
+    answer =  await store.tg_api.edit_message_media(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
-        # file_id="AgACAgIAAxkDAAIewWgkRhfhhz1IQa6nzL5GIKyNM0QrAAJd9DEbGhkgSRE3-vJU6jNjAQADAgADeAADNgQ",
+        file_id=image_file.file_id if image_file else None,
         file_path="images/programs.png",
         caption="\n".join(texts),
         reply_markup=keyboard,
     )
-    # TODO: если нету file_id то добавить в базу
+    if not image_file:
+        promo_image = Media(
+            title="promo_image",
+            file_id=answer['result']['photo'][0]["file_id"],
+            file_path=message_image_path
+        )
+        db_session.add(promo_image)
+        await db_session.commit()
+    return answer
 
 
 async def program_details(
@@ -92,12 +103,6 @@ async def program_details(
         ],
         reply_markup=keyboard,
     )
-    # await store.tg_api.edit_message_text(
-    #     chat_id=update.get_chat_id(),
-    #     message_id=update.get_message_id(),
-    #     text=text,
-    #     reply_markup=keyboard,
-    # )
     keyboard = inline_keyboard_builder(
         [
             [("🔙 Программы", f"choosing_program")],
