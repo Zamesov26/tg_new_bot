@@ -12,6 +12,7 @@ from app.bot.sveta.handlers.choosing_program import (
 )
 from app.bot.sveta.handlers.delete_message import delete_message
 from app.bot.sveta.handlers.feedback_input import feedback_input
+from app.bot.sveta.handlers.general import bot_help, say_hello
 from app.bot.sveta.handlers.main_menu import main_menu
 from app.bot.sveta.handlers.promo import promo
 from app.bot.sveta.handlers.viewing_faq import viewing_faq
@@ -21,6 +22,8 @@ if typing.TYPE_CHECKING:
 
 
 def setup_sveta(app: "Application"):
+    app.store.bot_manager.handlers.append(AddedToChatHandler(say_hello))
+    app.store.bot_manager.handlers.append(CommandHandler(bot_help, "help"))
     app.store.bot_manager.handlers.append(CommandHandler(main_menu, "start"))
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(main_menu, pattern="^main_menu")

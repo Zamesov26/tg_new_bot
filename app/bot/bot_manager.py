@@ -5,6 +5,7 @@ from logging import getLogger
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 if typing.TYPE_CHECKING:
     from app.tg_api.models import Update
     from app.web.app import Application
