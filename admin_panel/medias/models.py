@@ -11,7 +11,9 @@ class Media(models.Model):
     class Meta:
         managed = False
         db_table = "media"
-
+    
+    id = models.AutoField(primary_key=True)
+    title  =  models.CharField(max_length=256)
     file_id = models.CharField(
         max_length=256, null=True, blank=True, unique=True
     )

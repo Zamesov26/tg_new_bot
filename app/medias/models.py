@@ -13,6 +13,7 @@ class Media(BaseModel):
     __tablename__ = "media"
 
     id = Column(Integer, primary_key=True)
+    title = Column(String(256), nullable=False)
     file_id = Column(String(256), nullable=True, unique=True)
     url = Column(String(512), nullable=True)
     file_path = Column(String(512), nullable=True)

@@ -2,11 +2,9 @@ import asyncio
 import typing
 from asyncio import Queue, Task
 from logging import getLogger
-from pprint import pprint
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot.utils import get_chat_id_from_update
 
 if typing.TYPE_CHECKING:
     from app.tg_api.models import Update
@@ -49,7 +47,6 @@ class BotManager:
         await self._queue_updates.put(update)
 
     async def handle_updates(self, update: "Update"):
-        chat_id = get_chat_id_from_update(update)
         db_session: AsyncSession = self.app.database.session()
         async with db_session.begin():
             state = None
@@ -60,8 +57,9 @@ class BotManager:
                     self.logger.info(
                         f"run update handler {update.update_id}, state={state}"
                     )
-                    print(await callback(update_object, self.app.store, db_session))
-                    # self.logger.info(
-                    #     f"end update handler {update.update_id} state={game.state if game else None}"
-                    # )
+                    res = await callback(
+                        update_object, self.app.store, db_session
+                    )
+                    if res and not res["ok"]:
+                        self.logger.warning(res)
                     break
