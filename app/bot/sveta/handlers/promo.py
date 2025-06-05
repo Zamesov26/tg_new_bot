@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import select, or_
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.bot.models import UpdateMessage
@@ -20,7 +20,7 @@ async def promo(
     update: "UpdateMessage", store: "Store", db_session: AsyncSession, *args
 ):
     message_image_path = "images/promo.png"
-    
+
     keyboard = inline_keyboard_builder(
         [
             [("🔙 Меню", "main_menu")],
@@ -50,8 +50,8 @@ async def promo(
         )
         promo_image = Media(
             title="promo_image",
-            file_id=answer['result']['photo'][0]["file_id"],
-            file_path=message_image_path
+            file_id=answer["result"]["photo"][0]["file_id"],
+            file_path=message_image_path,
         )
         db_session.add(promo_image)
         await db_session.commit()
@@ -76,11 +76,12 @@ async def promo(
         file_path=message_image_path,
         reply_markup=keyboard,
     )
-    promo_image = Media(
-        title="promo_image",
-        file_id=answer['result']['photo'][0]["file_id"],
-        file_path=message_image_path
-    )
-    db_session.add(promo_image)
-    await db_session.commit()
+    if not image_file:
+        promo_image = Media(
+            title="promo_image",
+            file_id=answer["result"]["photo"][0]["file_id"],
+            file_path=message_image_path,
+        )
+        db_session.add(promo_image)
+        await db_session.commit()
     return answer
