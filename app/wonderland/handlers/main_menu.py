@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot.models import UpdateCallBackQuery, UpdateMessage
-from app.bot.utils import inline_keyboard_builder
+from app.bot_engine.models import UpdateCallBackQuery, UpdateMessage
+from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.models import Media
 from app.store import Store
 

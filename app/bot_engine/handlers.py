@@ -2,15 +2,15 @@ import re
 import typing
 from collections.abc import Callable
 
-from app.bot.filters import TextFilter
-from app.bot.models import (
+from app.bot_engine.filters import TextFilter
+from app.bot_engine.models import (
     UpdateCallBackQuery,
     UpdateMessage,
     UpdateMyChatMember,
 )
 
 if typing.TYPE_CHECKING:
-    from app.bot.models import UpdateBase
+    from app.bot_engine.models import UpdateBase
     from app.tg_api.models import Update
 
 

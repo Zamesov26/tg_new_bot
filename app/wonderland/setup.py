@@ -1,20 +1,19 @@
 import typing
 
-from app.bot.handlers import (
-    AddedToChatHandler,
+from app.bot_engine.handlers import (
     CallbackQueryHander,
     CommandHandler,
 )
-from app.bot.sveta.handlers.choosing_program import (
+from app.wonderland.handlers.choosing_program import (
     entering_date,
     program_details,
     programs,
 )
-from app.bot.sveta.handlers.delete_message import delete_message
-from app.bot.sveta.handlers.feedback_input import feedback_input
-from app.bot.sveta.handlers.main_menu import main_menu
-from app.bot.sveta.handlers.promo import promo
-from app.bot.sveta.handlers.viewing_faq import viewing_faq
+from app.wonderland.handlers.delete_message import delete_message
+from app.wonderland.handlers.feedback_input import feedback_input
+from app.wonderland.handlers.main_menu import main_menu
+from app.wonderland.handlers.promo import promo
+from app.wonderland.handlers.viewing_faq import viewing_faq
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application

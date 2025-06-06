@@ -1,4 +1,4 @@
-from app.bot.models import UpdateCallBackQuery
+from app.bot_engine.models import UpdateCallBackQuery
 from app.store import Store
 
 
