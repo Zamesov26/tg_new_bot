@@ -8,7 +8,7 @@ if typing.TYPE_CHECKING:
 
 class Store:
     def __init__(self, app: "Application"):
-        from app.bot.bot_manager import BotManager
+        from app.bot_engine.bot_manager import BotManager
         from app.programs.accessor import ProgramAccessor
         from app.tg_api.accessor import TgApiAccessor
         from app.users.accessor import UserAccessor

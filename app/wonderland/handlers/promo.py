@@ -3,8 +3,8 @@ from datetime import date
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot.models import UpdateMessage
-from app.bot.utils import inline_keyboard_builder
+from app.bot_engine.models import UpdateMessage
+from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.models import Media
 from app.promo.models import Promo
 from app.store import Store
