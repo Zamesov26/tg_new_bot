@@ -1,13 +1,12 @@
 from datetime import date
 
 from sqlalchemy import select, or_
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot_engine.models import UpdateMessage
+from app.actions.user_actions.decorators import log_user_action
+from app.bot_engine.update_context import UpdateContext
 from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.models import Media
 from app.promo.models import Promo
-from app.store import Store
 
 PROMO_TEMPLATE = """🎉 {title}$
 💸 {new_price}$
@@ -16,9 +15,8 @@ PROMO_TEMPLATE = """🎉 {title}$
 """
 
 
-async def promo(
-    update: "UpdateMessage", store: "Store", db_session: AsyncSession, *args
-):
+@log_user_action("promo")
+async def promo(ctx: UpdateContext, *args):
     message_image_path = "images/promo.png"
 
     keyboard = inline_keyboard_builder(
@@ -32,17 +30,17 @@ async def promo(
         or_(Promo.start_date == None, Promo.start_date <= today),
         or_(Promo.end_date == None, Promo.end_date >= today),
     )
-    res = await db_session.execute(stmt)
+    res = await ctx.db_session.execute(stmt)
     promos = list(res.scalars().all())
     image_file = (
-        await db_session.execute(
+        await ctx.db_session.execute(
             select(Media).where(Media.file_path == message_image_path)
         )
     ).scalar_one_or_none()
     if not promos:
-        answer = await store.tg_api.edit_message_media(
-            chat_id=update.get_chat_id(),
-            message_id=update.get_message_id(),
+        answer = await ctx.store.tg_api.edit_message_media(
+            chat_id=ctx.update.get_chat_id(),
+            message_id=ctx.update.get_message_id(),
             caption="Нет действующийх акций",
             file_id=image_file.file_id if image_file else None,
             file_path=message_image_path,
@@ -54,8 +52,8 @@ async def promo(
                 file_id=answer["result"]["photo"][0]["file_id"],
                 file_path=message_image_path,
             )
-            db_session.add(promo_image)
-            await db_session.commit()
+            ctx.db_session.add(promo_image)
+            await ctx.db_session.commit()
         return answer
     texts = []
     for promo_item in promos:
@@ -69,9 +67,9 @@ async def promo(
             )
         )
 
-    answer = await store.tg_api.edit_message_media(
-        chat_id=update.get_chat_id(),
-        message_id=update.get_message_id(),
+    answer = await ctx.store.tg_api.edit_message_media(
+        chat_id=ctx.update.get_chat_id(),
+        message_id=ctx.update.get_message_id(),
         caption="---------------------------\n".join(texts),
         file_id=image_file.file_id if image_file else None,
         file_path=message_image_path,
@@ -83,6 +81,6 @@ async def promo(
             file_id=answer["result"]["photo"][0]["file_id"],
             file_path=message_image_path,
         )
-        db_session.add(promo_image)
-        await db_session.commit()
+        ctx.db_session.add(promo_image)
+        await ctx.db_session.commit()
     return answer

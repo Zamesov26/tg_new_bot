@@ -4,7 +4,7 @@ from asyncio import Queue, Task
 from logging import getLogger
 
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from app.bot_engine.update_context import UpdateContext
 
 if typing.TYPE_CHECKING:
     from app.tg_api.models import Update
@@ -49,17 +49,16 @@ class BotManager:
     async def handle_updates(self, update: "Update"):
         db_session: AsyncSession = self.app.database.session()
         async with db_session.begin():
-            state = None
+            update_context = UpdateContext(
+                store=self.app.store, db_session=db_session
+            )
             for handler in self.handlers:
-                res = handler.check(update, state=state)
+                res = handler.check(update)
                 if res:
                     update_object, callback = res
-                    self.logger.info(
-                        f"run update handler {update.update_id}, state={state}"
-                    )
-                    res = await callback(
-                        update_object, self.app.store, db_session
-                    )
+                    update_context.set_update(update_object)
+                    self.logger.info(f"run update handler {update.update_id}")
+                    res = await callback(update_context)
                     if res and not res["ok"]:
                         self.logger.warning(res)
                     break

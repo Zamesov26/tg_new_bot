@@ -1,10 +1,9 @@
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.bot_engine.models import UpdateCallBackQuery
+from app.actions.user_actions.decorators import log_user_action
+from app.bot_engine.update_context import UpdateContext
 from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.models import Media
-from app.store import Store
 
 TEMPLATE = """{title} - {price}$
 {short_description}
@@ -16,14 +15,10 @@ def chunk_list(lst, chunk_size):
     return [lst[i : i + chunk_size] for i in range(0, len(lst), chunk_size)]
 
 
-async def programs(
-    update: "UpdateCallBackQuery",
-    store: "Store",
-    db_session: AsyncSession,
-    *args,
-):
+@log_user_action("programs")
+async def programs(ctx: UpdateContext, *args):
     message_image_path = "images/programs.png"
-    program_list = await store.program.get_all(db_session)
+    program_list = await ctx.store.program.get_all(ctx.db_session)
     texts = []
     buttons = []
     for item in program_list:
@@ -43,13 +38,13 @@ async def programs(
     keyboard = inline_keyboard_builder(buttons)
 
     image_file = (
-        await db_session.execute(
+        await ctx.db_session.execute(
             select(Media).where(Media.file_path == message_image_path)
         )
     ).scalar_one_or_none()
-    answer = await store.tg_api.edit_message_media(
-        chat_id=update.get_chat_id(),
-        message_id=update.get_message_id(),
+    answer = await ctx.store.tg_api.edit_message_media(
+        chat_id=ctx.update.get_chat_id(),
+        message_id=ctx.update.get_message_id(),
         file_id=image_file.file_id if image_file else None,
         file_path="images/programs.png",
         caption="\n".join(texts),
@@ -61,19 +56,17 @@ async def programs(
             file_id=answer["result"]["photo"][0]["file_id"],
             file_path=message_image_path,
         )
-        db_session.add(promo_image)
-        await db_session.commit()
+        ctx.db_session.add(promo_image)
+        await ctx.db_session.commit()
     return answer
 
 
-async def program_details(
-    update: "UpdateCallBackQuery",
-    store: "Store",
-    db_session: AsyncSession,
-    *args,
-):
-    _, program = update.callback_query.data.split(":")
-    program_item = await store.program.get_by_id(db_session, int(program))
+@log_user_action("program_details")
+async def program_details(ctx: UpdateContext, *args,):
+    _, program = ctx.update.callback_query.data.split(":")
+    program_item = await ctx.store.program.get_by_id(
+        ctx.db_session, int(program)
+    )
     text = program_item.description or program_item.short_description
     keyboard = inline_keyboard_builder(
         [
@@ -82,8 +75,8 @@ async def program_details(
         ]
     )
     # TODO: удалять прошлое сообщение либо хотябы убирать из него клавиатуру.
-    await store.tg_api.send_media_group(
-        chat_id=update.get_chat_id(),
+    await ctx.store.tg_api.send_media_group(
+        chat_id=ctx.update.get_chat_id(),
         media_items=[
             {
                 "type": "photo",
@@ -108,14 +101,15 @@ async def program_details(
             [("🔙 Программы", f"choosing_program")],
         ]
     )
-    await store.tg_api.send_message(
-        chat_id=update.get_chat_id(),
+    await ctx.store.tg_api.send_message(
+        chat_id=ctx.update.get_chat_id(),
         text="Возврат к выбору",
         reply_markup=keyboard,
     )
 
 
-async def entering_date(update: "UpdateCallBackQuery", store: "Store", *args):
+@log_user_action("entering_date")
+async def entering_date(ctx: UpdateContext, *args):
     # TODO
     text = "Тут будет описанно торговое предложение и переход к оформлению/заполнение анкеты"
     keyboard = inline_keyboard_builder(
@@ -125,10 +119,8 @@ async def entering_date(update: "UpdateCallBackQuery", store: "Store", *args):
         ]
     )
 
-    await store.tg_api.send_message(
-        chat_id=update.get_chat_id(),
+    await ctx.store.tg_api.send_message(
+        chat_id=ctx.update.get_chat_id(),
         text=text,
         reply_markup=keyboard,
     )
-# AgACAgIAAxkDAAIe3mg_RhEa8ck2qvOIRMpHjc7uFYhGAAJG9DEbp9z4STER-dUYyl1jAQADAgADcwADNgQ
-# AgACAgIAAxkDAAIe3mg_RhEa8ck2qvOIRMpHjc7uFYhGAAJG9DEbp9z4STER-dUYyl1jAQADAgADcwADNgQ

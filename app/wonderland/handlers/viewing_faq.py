@@ -1,9 +1,8 @@
-from app.bot_engine.models import UpdateMessage
+from app.bot_engine.update_context import UpdateContext
 from app.bot_engine.utils import inline_keyboard_builder
-from app.store import Store
 
 
-async def viewing_faq(update: "UpdateMessage", store: "Store", *args):
+async def viewing_faq(ctx: UpdateContext, *args):
     text = (
         "❓ Что входит в бабл шоу?\n"
         "💬 Шоу длится 30–40 минут и включает трюки с гигантскими пузырями, пузырями с дымом и огнём, миллион мыльных пузырей, а также погружение ребёнка в пузырь 🫧✨\n\n"
@@ -16,9 +15,9 @@ async def viewing_faq(update: "UpdateMessage", store: "Store", *args):
             [("🔙 Меню", "main_menu")],
         ]
     )
-    await store.tg_api.edit_message_text(
-        chat_id=update.get_chat_id(),
-        message_id=update.get_message_id(),
+    await ctx.store.tg_api.edit_message_text(
+        chat_id=ctx.update.get_chat_id(),
+        message_id=ctx.update.get_message_id(),
         text=text,
         reply_markup=keyboard,
     )

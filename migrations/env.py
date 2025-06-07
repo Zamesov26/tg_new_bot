@@ -10,6 +10,7 @@ from app.medias.models import Media
 from app.programs.models import Programs
 from app.promo.models import Promo
 from app.users.models import User
+from app.actions import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
