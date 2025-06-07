@@ -26,7 +26,7 @@ class User(BaseModel):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     tg_id: Mapped[int] = mapped_column(BIGINT, unique=True)
-    user_name: Mapped[str] = mapped_column(VARCHAR(32))
+    user_name: Mapped[str] = mapped_column(VARCHAR(32), nullable=True)
     first_name: Mapped[str] = mapped_column(VARCHAR(64))
     last_name: Mapped[str] = mapped_column(VARCHAR(64), nullable=True)
     langue_code: Mapped[str] = mapped_column(VARCHAR(10), nullable=True)
