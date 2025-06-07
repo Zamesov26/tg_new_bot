@@ -47,7 +47,7 @@ async def programs(
             select(Media).where(Media.file_path == message_image_path)
         )
     ).scalar_one_or_none()
-    answer =  await store.tg_api.edit_message_media(
+    answer = await store.tg_api.edit_message_media(
         chat_id=update.get_chat_id(),
         message_id=update.get_message_id(),
         file_id=image_file.file_id if image_file else None,
@@ -58,8 +58,8 @@ async def programs(
     if not image_file:
         promo_image = Media(
             title="promo_image",
-            file_id=answer['result']['photo'][0]["file_id"],
-            file_path=message_image_path
+            file_id=answer["result"]["photo"][0]["file_id"],
+            file_path=message_image_path,
         )
         db_session.add(promo_image)
         await db_session.commit()
@@ -130,3 +130,5 @@ async def entering_date(update: "UpdateCallBackQuery", store: "Store", *args):
         text=text,
         reply_markup=keyboard,
     )
+# AgACAgIAAxkDAAIe3mg_RhEa8ck2qvOIRMpHjc7uFYhGAAJG9DEbp9z4STER-dUYyl1jAQADAgADcwADNgQ
+# AgACAgIAAxkDAAIe3mg_RhEa8ck2qvOIRMpHjc7uFYhGAAJG9DEbp9z4STER-dUYyl1jAQADAgADcwADNgQ

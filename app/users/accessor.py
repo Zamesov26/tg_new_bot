@@ -15,9 +15,9 @@ class UserAccessor(BaseAccessor):
         return user
 
     async def get_by_id(self, db_session: AsyncSession, user_id: int) -> User:
-        stmt = select(User).where(User.id == user_id)
+        stmt = select(User).where(User.tg_id == user_id).with_for_update()
         res = await db_session.execute(stmt)
-        return res.scalar_one()
+        return res.scalar_one_or_none()
 
     async def get_by_tg_id(
         self, db_session: AsyncSession, tg_id: int

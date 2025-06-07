@@ -100,12 +100,18 @@ class TgApiAccessor(BaseAccessor):
             params["reply_markup"] = reply_markup.model_dump_json()
 
         data = aiohttp.FormData()
-        data.add_field(
-            name="photo",
-            value=file_id or open(path_image, "rb"),
-            filename="file.png",
-            content_type="image/png",
-        )
+        if file_id:
+            data.add_field(
+                name="photo",
+                value=file_id,
+            )
+        else:
+            data.add_field(
+                name="photo",
+                value=open(path_image, "rb"),
+                filename="file.png",
+                content_type="image/png",
+            )
 
         async with self.session.get(
             self._build_query(
@@ -115,8 +121,7 @@ class TgApiAccessor(BaseAccessor):
             ),
             data=data,
         ) as response:
-            data = await response.json()
-            return Message.model_validate(data["result"])
+            return await response.json()
 
     async def send_media_group(
         self,

@@ -5,12 +5,30 @@ from app.bot_engine.models import UpdateCallBackQuery, UpdateMessage
 from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.models import Media
 from app.store import Store
+from app.users.models import User
 
 
 async def main_menu(
-    update: UpdateCallBackQuery | UpdateMessage, store: "Store", db_session: AsyncSession, *args
+    update: UpdateCallBackQuery | UpdateMessage,
+    store: "Store",
+    db_session: AsyncSession,
+    *args
 ):
     message_image_path = "images/logo.png"
+    user = await store.user.get_by_id(
+        db_session, update.from_user.tg_id
+    )
+    if not user:
+        user = User(
+            tg_id=update.from_user.tg_id,
+            user_name=update.from_user.username,
+            first_name=update.from_user.first_name,
+            last_name=update.from_user.last_name,
+            langue_code=update.from_user.language_code,
+        )
+        db_session.add(user)
+        await db_session.commit()
+
     text = (
         "Добро пожаловать в Wonderland — волшебный мир шоу пузырей и весёлых аниматоров!\n"
         "Чем могу помочь?"
@@ -48,8 +66,8 @@ async def main_menu(
     if not image_file:
         promo_image = Media(
             title="promo_image",
-            file_id=answer['result']['photo'][0]["file_id"],
-            file_path=message_image_path
+            file_id=answer["result"]["photo"][0]["file_id"],
+            file_path=message_image_path,
         )
         db_session.add(promo_image)
         await db_session.commit()

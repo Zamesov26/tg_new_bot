@@ -24,7 +24,6 @@ def setup_sveta(app: "Application"):
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(main_menu, pattern="^main_menu")
     )
-    # сhoosing_programm
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(programs, pattern="^choosing_program")
     )
@@ -34,15 +33,12 @@ def setup_sveta(app: "Application"):
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(entering_date, pattern="^entering_date")
     )
-    # feedback_input
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(feedback_input, pattern="^feedback_input")
     )
-    #  promo
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(promo, pattern="^promo")
     )
-    # viewing_faq
     app.store.bot_manager.handlers.append(
         CallbackQueryHander(viewing_faq, pattern="^viewing_faq")
     )

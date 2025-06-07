@@ -30,7 +30,7 @@ class BotManager:
     async def life_loop(self):
         while self.running:
             update = await self._queue_updates.get()
-            print(update)
+            self.logger.info(update)
             update_task = asyncio.create_task(self.handle_updates(update))
             update_task.add_done_callback(self._done_callback)
 

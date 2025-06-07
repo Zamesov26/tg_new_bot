@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class User(BaseModel):
-    id: int
+    tg_id: int = Field(..., alias="id")
     is_bot: bool
     first_name: str
     last_name: str | None = None

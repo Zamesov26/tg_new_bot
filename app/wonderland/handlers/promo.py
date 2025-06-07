@@ -20,7 +20,7 @@ async def promo(
     update: "UpdateMessage", store: "Store", db_session: AsyncSession, *args
 ):
     message_image_path = "images/promo.png"
-    
+
     keyboard = inline_keyboard_builder(
         [
             [("🔙 Меню", "main_menu")],
@@ -51,8 +51,8 @@ async def promo(
         if not image_file:
             promo_image = Media(
                 title="promo_image",
-                file_id=answer['result']['photo'][0]["file_id"],
-                file_path=message_image_path
+                file_id=answer["result"]["photo"][0]["file_id"],
+                file_path=message_image_path,
             )
             db_session.add(promo_image)
             await db_session.commit()
@@ -80,8 +80,8 @@ async def promo(
     if not image_file:
         promo_image = Media(
             title="promo_image",
-            file_id=answer['result']['photo'][0]["file_id"],
-            file_path=message_image_path
+            file_id=answer["result"]["photo"][0]["file_id"],
+            file_path=message_image_path,
         )
         db_session.add(promo_image)
         await db_session.commit()
