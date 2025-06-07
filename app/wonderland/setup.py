@@ -1,7 +1,7 @@
 import typing
 
 from app.bot_engine.handlers import (
-    CallbackQueryHander,
+    CallbackQueryHandler,
     CommandHandler,
 )
 from app.wonderland.handlers.choosing_program import (
@@ -22,27 +22,27 @@ if typing.TYPE_CHECKING:
 def setup_sveta(app: "Application"):
     app.store.bot_manager.handlers.append(CommandHandler(main_menu, "start"))
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(main_menu, pattern="^main_menu")
+        CallbackQueryHandler(main_menu, pattern="^main_menu")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(programs, pattern="^choosing_program")
+        CallbackQueryHandler(programs, pattern="^choosing_program")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(program_details, pattern="^program_details:")
+        CallbackQueryHandler(program_details, pattern="^program_details:")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(entering_date, pattern="^entering_date")
+        CallbackQueryHandler(entering_date, pattern="^entering_date")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(feedback_input, pattern="^feedback_input")
+        CallbackQueryHandler(feedback_input, pattern="^feedback_input")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(promo, pattern="^promo")
+        CallbackQueryHandler(promo, pattern="^promo")
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(viewing_faq, pattern="^viewing_faq")
+        CallbackQueryHandler(viewing_faq, pattern="^viewing_faq")
     )
     # delete_message
     app.store.bot_manager.handlers.append(
-        CallbackQueryHander(delete_message, pattern="^remove_message")
+        CallbackQueryHandler(delete_message, pattern="^remove_message")
     )

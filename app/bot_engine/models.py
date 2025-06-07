@@ -6,7 +6,8 @@ if typing.TYPE_CHECKING:
         CallbackQuery,
         ChatMemberUpdated,
         Message,
-        Update, )
+        Update,
+    )
 
 
 class UpdateBase(ABC):
@@ -18,6 +19,12 @@ class UpdateBase(ABC):
         pass
 
     def get_message_id(self):
+        pass
+    
+    def get_user_tg_id(self):
+        pass
+    
+    def get_data(self):
         pass
 
 
@@ -32,13 +39,16 @@ class UpdateCallBackQuery(UpdateBase):
 
     def get_message_id(self):
         return self.callback_query.message.message_id
-    
+
     def get_user_tg_id(self):
         return self.callback_query.message.from_user.tg_id
-    
+
     @property
     def from_user(self):
         return self.callback_query.from_user
+    
+    def get_data(self):
+        return self.callback_query.data
 
 
 class UpdateMyChatMember(UpdateBase):
@@ -62,7 +72,10 @@ class UpdateMessage(UpdateBase):
 
     def get_message_id(self):
         return self.message.message_id
-    
+
     @property
     def from_user(self):
         return self.message.from_user
+    
+    def get_data(self):
+        return self.message.text

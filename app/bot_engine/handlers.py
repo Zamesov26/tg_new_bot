@@ -10,8 +10,8 @@ from app.bot_engine.models import (
 )
 
 if typing.TYPE_CHECKING:
-    from app.bot_engine.models import UpdateBase
     from app.tg_api.models import Update
+    from app.bot_engine.models import UpdateBase
 
 
 class BaseHandler:
@@ -39,7 +39,7 @@ class TextHandler(BaseHandler):
 class CommandHandler(TextHandler):
     def __init__(self, callback: Callable, command: str, *args):
         super().__init__(callback)
-        # TODO потом тоже заменить на ормальный фильтр
+        # TODO заменить на нормальный фильтр
         self.text_filter = (
             lambda x: x.message.text[1:].lower().startswith(command)
         )
@@ -63,7 +63,7 @@ class AddedToChatHandler(BaseHandler):
         return None
 
 
-class CallbackQueryHander(BaseHandler):
+class CallbackQueryHandler(BaseHandler):
     def __init__(self, callback: Callable, pattern: str = ""):
         self.callback = callback
         self.pattern = pattern
@@ -84,20 +84,26 @@ class ConversationEndError(Exception):
     pass
 
 
-class ConversationHander:
+class ConversationHandler:
     def __init__(
         self,
         entry_points: list[BaseHandler],
         states: dict[int | str, list[BaseHandler]],
         fallbacks: list[BaseHandler] | None = None,
+        get_state_from_update: Callable[
+            ["Update"], int | str | None
+        ] = lambda update: None,
     ):
         self.entry_points = entry_points
-        self.fallbacks = fallbacks
         self.states = states
+        self.fallbacks = fallbacks
+        self.get_state_from_update = get_state_from_update
 
     def check(
-        self, update: "Update", state: int | str, *args, **kwargs
+        self, update: "Update", *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
+        state = self.get_state_from_update(update)
+
         if state is None:
             for handler in self.entry_points:
                 if res := handler.check(update):
