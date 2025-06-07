@@ -53,7 +53,6 @@ async def promo(ctx: UpdateContext, *args):
                 file_path=message_image_path,
             )
             ctx.db_session.add(promo_image)
-            await ctx.db_session.commit()
         return answer
     texts = []
     for promo_item in promos:
@@ -82,5 +81,4 @@ async def promo(ctx: UpdateContext, *args):
             file_path=message_image_path,
         )
         ctx.db_session.add(promo_image)
-        await ctx.db_session.commit()
     return answer

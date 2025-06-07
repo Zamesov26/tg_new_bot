@@ -23,7 +23,6 @@ async def main_menu(ctx: UpdateContext, *args):
             langue_code=ctx.update.from_user.language_code,
         )
         ctx.db_session.add(user)
-        await ctx.db_session.commit()
 
     text = (
         "Добро пожаловать в Wonderland — волшебный мир шоу пузырей и весёлых аниматоров!\n"
@@ -66,5 +65,4 @@ async def main_menu(ctx: UpdateContext, *args):
             file_path=message_image_path,
         )
         ctx.db_session.add(promo_image)
-        await ctx.db_session.commit()
     return answer

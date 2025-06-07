@@ -29,7 +29,6 @@ def log_user_action(action_type: str):
                 error_message=error_message,
             )
             ctx.db_session.add(action)
-            await ctx.db_session.commit()
 
             return result
 

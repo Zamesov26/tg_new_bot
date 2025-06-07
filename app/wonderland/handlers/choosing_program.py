@@ -57,7 +57,6 @@ async def programs(ctx: UpdateContext, *args):
             file_path=message_image_path,
         )
         ctx.db_session.add(promo_image)
-        await ctx.db_session.commit()
     return answer
 
 
