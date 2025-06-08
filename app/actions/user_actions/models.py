@@ -1,7 +1,15 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from enum import Enum
 
-from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, DateTime, BIGINT
+from sqlalchemy import (
+    BIGINT,
+    BigInteger,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.sqlalchemy_base import BaseModel

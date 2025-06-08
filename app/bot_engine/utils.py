@@ -2,7 +2,6 @@ import typing
 
 from app.tg_api.models import InlineKeyboardButton, InlineKeyboardMarkup
 
-
 TextKeyBoard = typing.Annotated[
     list[list[str | int | tuple[int | str, int | str]]],
     (

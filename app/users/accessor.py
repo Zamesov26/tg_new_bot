@@ -2,31 +2,48 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.base.base_accessor import BaseAccessor
-from app.users.models import User
+from app.tg_api.models import User
+from app.users.models import User as UserModel
 
 
 class UserAccessor(BaseAccessor):
-    async def create_user(
-        self, db_session: AsyncSession, tg_id: int, name
-    ) -> User:
-        user = User(tg_id=tg_id, name=name[:10])
-        db_session.add(user)
-        await db_session.flush()
-        return user
-
-    async def get_by_id(self, db_session: AsyncSession, user_id: int) -> User:
-        stmt = select(User).where(User.tg_id == user_id).with_for_update()
+    async def get_by_id(
+        self, db_session: AsyncSession, user_id: int
+    ) -> UserModel:
+        stmt = (
+            select(UserModel)
+            .where(UserModel.tg_id == user_id)
+            .with_for_update()
+        )
         res = await db_session.execute(stmt)
         return res.scalar_one_or_none()
 
     async def get_by_tg_id(
         self, db_session: AsyncSession, tg_id: int
-    ) -> User | None:
-        stmt = select(User).where(User.tg_id == tg_id)
+    ) -> UserModel | None:
+        stmt = select(UserModel).where(UserModel.tg_id == tg_id)
         res = await db_session.execute(stmt)
         return res.scalar_one_or_none()
 
-    async def get_all(self, db_session: AsyncSession) -> list[User]:
-        stms = select(User)
+    async def get_all(self, db_session: AsyncSession) -> list[UserModel]:
+        stms = select(UserModel)
         res = await db_session.execute(stms)
         return list(res.scalars().all())
+
+    async def get_or_create(
+        self, db_session: AsyncSession, tg_user: User
+    ) -> tuple[UserModel, bool]:
+        user = await self.get_by_id(db_session, tg_user.tg_id)
+        if user:
+            return user, False
+
+        user = UserModel(
+            tg_id=tg_user.tg_id,
+            user_name=tg_user.username,
+            first_name=tg_user.first_name,
+            last_name=tg_user.last_name,
+            langue_code=tg_user.language_code,
+        )
+        db_session.add(user)
+
+        return user, True

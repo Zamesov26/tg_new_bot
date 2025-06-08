@@ -2,7 +2,7 @@ from app.bot_engine.update_context import UpdateContext
 from app.bot_engine.utils import inline_keyboard_builder
 
 
-async def feedback_input(ctx: UpdateContext, *args):
+async def feedback_input(ctx: UpdateContext, *args, **kwargs):
     text = "TODO: нужно подумтаь, что именно мы хотим, просто взять телефон, предложить контакты и т.д."
     keyboard = inline_keyboard_builder(
         [

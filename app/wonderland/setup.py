@@ -1,6 +1,7 @@
 import typing
 
 from app.bot_engine.handlers import (
+    AddedToChatHandler,
     CallbackQueryHandler,
     CommandHandler,
 )
@@ -20,6 +21,8 @@ if typing.TYPE_CHECKING:
 
 
 def setup_sveta(app: "Application"):
+    app.store.bot_manager.handlers.append(AddedToChatHandler(main_menu))
+
     app.store.bot_manager.handlers.append(CommandHandler(main_menu, "start"))
     app.store.bot_manager.handlers.append(
         CallbackQueryHandler(main_menu, pattern="^main_menu")

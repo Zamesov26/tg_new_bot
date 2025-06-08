@@ -1,13 +1,15 @@
 from datetime import date
 
-from sqlalchemy import select, or_
+from sqlalchemy import or_, select
 
 from app.actions.user_actions.decorators import log_user_action
 from app.bot_engine.update_context import UpdateContext
 from app.bot_engine.utils import inline_keyboard_builder
+from app.medias.decorators import with_image_file
 from app.medias.models import Media
 from app.promo.models import Promo
 
+MESSAGE_IMAGE_PATH = "images/promo.png"
 PROMO_TEMPLATE = """🎉 {title}$
 💸 {new_price}$
 📝{short_description}
@@ -16,9 +18,8 @@ PROMO_TEMPLATE = """🎉 {title}$
 
 
 @log_user_action("promo")
-async def promo(ctx: UpdateContext, *args):
-    message_image_path = "images/promo.png"
-
+@with_image_file(MESSAGE_IMAGE_PATH)
+async def promo(ctx: UpdateContext, image_file: Media | None, *args, **kwargs):
     keyboard = inline_keyboard_builder(
         [
             [("🔙 Меню", "main_menu")],
@@ -32,27 +33,15 @@ async def promo(ctx: UpdateContext, *args):
     )
     res = await ctx.db_session.execute(stmt)
     promos = list(res.scalars().all())
-    image_file = (
-        await ctx.db_session.execute(
-            select(Media).where(Media.file_path == message_image_path)
-        )
-    ).scalar_one_or_none()
     if not promos:
         answer = await ctx.store.tg_api.edit_message_media(
             chat_id=ctx.update.get_chat_id(),
             message_id=ctx.update.get_message_id(),
             caption="Нет действующийх акций",
             file_id=image_file.file_id if image_file else None,
-            file_path=message_image_path,
+            file_path=MESSAGE_IMAGE_PATH,
             reply_markup=keyboard,
         )
-        if not image_file:
-            promo_image = Media(
-                title="promo_image",
-                file_id=answer["result"]["photo"][0]["file_id"],
-                file_path=message_image_path,
-            )
-            ctx.db_session.add(promo_image)
         return answer
     texts = []
     for promo_item in promos:
@@ -71,14 +60,7 @@ async def promo(ctx: UpdateContext, *args):
         message_id=ctx.update.get_message_id(),
         caption="---------------------------\n".join(texts),
         file_id=image_file.file_id if image_file else None,
-        file_path=message_image_path,
+        file_path=MESSAGE_IMAGE_PATH,
         reply_markup=keyboard,
     )
-    if not image_file:
-        promo_image = Media(
-            title="promo_image",
-            file_id=answer["result"]["photo"][0]["file_id"],
-            file_path=message_image_path,
-        )
-        ctx.db_session.add(promo_image)
     return answer

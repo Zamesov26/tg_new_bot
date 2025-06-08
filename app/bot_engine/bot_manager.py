@@ -4,6 +4,7 @@ from asyncio import Queue, Task
 from logging import getLogger
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.bot_engine.update_context import UpdateContext
 
 if typing.TYPE_CHECKING:
@@ -57,7 +58,6 @@ class BotManager:
                 if res:
                     update_object, callback = res
                     update_context.set_update(update_object)
-                    self.logger.info(f"run update handler {update.update_id}")
                     res = await callback(update_context)
                     if res and not res["ok"]:
                         self.logger.warning(res)

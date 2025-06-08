@@ -20,10 +20,10 @@ class UpdateBase(ABC):
 
     def get_message_id(self):
         pass
-    
+
     def get_user_tg_id(self):
         pass
-    
+
     def get_data(self):
         pass
 
@@ -46,7 +46,7 @@ class UpdateCallBackQuery(UpdateBase):
     @property
     def from_user(self):
         return self.callback_query.from_user
-    
+
     def get_data(self):
         return self.callback_query.data
 
@@ -76,6 +76,6 @@ class UpdateMessage(UpdateBase):
     @property
     def from_user(self):
         return self.message.from_user
-    
+
     def get_data(self):
         return self.message.text

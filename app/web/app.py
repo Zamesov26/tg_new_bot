@@ -4,12 +4,12 @@ from aiohttp.web import View as AiohttpView
 from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 
-from app.wonderland.setup import setup_sveta
 from app.config import Config, setup_config
 from app.database.database import Database
 from app.store import Store, setup_store
 from app.web.logger import setup_logging
 from app.web.mw import setup_middlewares
+from app.wonderland.setup import setup_sveta
 
 __all__ = ("Application",)
 

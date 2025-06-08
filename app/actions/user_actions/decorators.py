@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from functools import wraps
 
 from app.actions import UserAction

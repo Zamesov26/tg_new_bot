@@ -10,8 +10,8 @@ from app.bot_engine.models import (
 )
 
 if typing.TYPE_CHECKING:
-    from app.tg_api.models import Update
     from app.bot_engine.models import UpdateBase
+    from app.tg_api.models import Update
 
 
 class BaseHandler:

@@ -3,8 +3,10 @@ from sqlalchemy import select
 from app.actions.user_actions.decorators import log_user_action
 from app.bot_engine.update_context import UpdateContext
 from app.bot_engine.utils import inline_keyboard_builder
+from app.medias.decorators import with_image_file
 from app.medias.models import Media
 
+PROGRAM_MESSAGE_IMAGE_PATH = "images/programs.png"
 TEMPLATE = """{title} - {price}$
 {short_description}
 """
@@ -16,11 +18,14 @@ def chunk_list(lst, chunk_size):
 
 
 @log_user_action("programs")
-async def programs(ctx: UpdateContext, *args):
-    message_image_path = "images/programs.png"
+@with_image_file(PROGRAM_MESSAGE_IMAGE_PATH)
+async def programs(
+    ctx: UpdateContext, image_file: Media | None, *args, **kwargs
+):
     program_list = await ctx.store.program.get_all(ctx.db_session)
     texts = []
     buttons = []
+
     for item in program_list:
         texts.append(
             TEMPLATE.format(
@@ -37,11 +42,6 @@ async def programs(ctx: UpdateContext, *args):
     )
     keyboard = inline_keyboard_builder(buttons)
 
-    image_file = (
-        await ctx.db_session.execute(
-            select(Media).where(Media.file_path == message_image_path)
-        )
-    ).scalar_one_or_none()
     answer = await ctx.store.tg_api.edit_message_media(
         chat_id=ctx.update.get_chat_id(),
         message_id=ctx.update.get_message_id(),
@@ -50,18 +50,11 @@ async def programs(ctx: UpdateContext, *args):
         caption="\n".join(texts),
         reply_markup=keyboard,
     )
-    if not image_file:
-        promo_image = Media(
-            title="promo_image",
-            file_id=answer["result"]["photo"][0]["file_id"],
-            file_path=message_image_path,
-        )
-        ctx.db_session.add(promo_image)
     return answer
 
 
 @log_user_action("program_details")
-async def program_details(ctx: UpdateContext, *args,):
+async def program_details(ctx: UpdateContext, *args, **kwargs):
     _, program = ctx.update.callback_query.data.split(":")
     program_item = await ctx.store.program.get_by_id(
         ctx.db_session, int(program)
@@ -85,12 +78,10 @@ async def program_details(ctx: UpdateContext, *args,):
             {
                 "type": "photo",
                 "file_id": "AgACAgIAAxkDAAIewWgkRhfhhz1IQa6nzL5GIKyNM0QrAAJd9DEbGhkgSRE3-vJU6jNjAQADAgADeAADNgQ",
-                # "caption": "Фото по ссылке"
             },
             {
                 "type": "photo",
                 "file_id": "AgACAgIAAxkDAAIev2gkRUYxl76b6bLhz1jAuqdSLzs-AAJt7DEbtLQoSUHuX48UhUsSAQADAgADeAADNgQ",
-                # "caption": "Фото с файла"
             },
         ],
         reply_markup=keyboard,
@@ -108,7 +99,7 @@ async def program_details(ctx: UpdateContext, *args,):
 
 
 @log_user_action("entering_date")
-async def entering_date(ctx: UpdateContext, *args):
+async def entering_date(ctx: UpdateContext, *args, **kwargs):
     # TODO
     text = "Тут будет описанно торговое предложение и переход к оформлению/заполнение анкеты"
     keyboard = inline_keyboard_builder(
