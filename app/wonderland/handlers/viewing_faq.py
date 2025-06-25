@@ -11,8 +11,8 @@ async def viewing_faq(ctx: UpdateContext, *args, **kwargs):
     )
     keyboard = inline_keyboard_builder(
         [
-            [("⬅️ Назад", "prev_questions"), ("➡️ Далее", "next_questions")],
-            [("🔙 Меню", "main_menu")],
+            [["⬅️ Назад", "prev_questions"], ["➡️ Далее", "next_questions"]],
+            [["🔙 Меню", "main_menu"]],
         ]
     )
     await ctx.store.tg_api.edit_message_text(

@@ -30,7 +30,7 @@ class InaccessibleMessage(BaseModel):
 
 class InlineKeyboardButton(BaseModel):
     text: str
-    # url: Optional[str] = None
+    url: str | None = None
     callback_data: str | None = None
 
 

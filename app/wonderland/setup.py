@@ -12,7 +12,10 @@ from app.wonderland.handlers.choosing_program import (
 )
 from app.wonderland.handlers.delete_message import delete_message
 from app.wonderland.handlers.feedback_input import feedback_input
-from app.wonderland.handlers.main_menu import main_menu
+from app.wonderland.handlers.main_menu import (
+    main_menu_callback,
+    main_menu_command,
+)
 from app.wonderland.handlers.promo import promo
 from app.wonderland.handlers.viewing_faq import viewing_faq
 
@@ -21,11 +24,13 @@ if typing.TYPE_CHECKING:
 
 
 def setup_sveta(app: "Application"):
-    app.store.bot_manager.handlers.append(AddedToChatHandler(main_menu))
+    app.store.bot_manager.handlers.append(AddedToChatHandler(main_menu_command))
 
-    app.store.bot_manager.handlers.append(CommandHandler(main_menu, "start"))
     app.store.bot_manager.handlers.append(
-        CallbackQueryHandler(main_menu, pattern="^main_menu")
+        CommandHandler(main_menu_command, command="start")
+    )
+    app.store.bot_manager.handlers.append(
+        CallbackQueryHandler(main_menu_callback, pattern="^main_menu")
     )
     app.store.bot_manager.handlers.append(
         CallbackQueryHandler(programs, pattern="^choosing_program")

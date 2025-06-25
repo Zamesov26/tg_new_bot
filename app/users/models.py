@@ -8,12 +8,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.database.sqlalchemy_base import BaseModel
 
 
-class UserRole(enum.Enum):
-    ADMIN = "admin"
-    USER = "user"
-    RESTRICTED = "restricted"
-
-
 class UserState(str, Enum):
     ACTIVE = "active"
     KICKED = "kicked"
@@ -22,6 +16,11 @@ class UserState(str, Enum):
 
 class User(BaseModel):
     __tablename__ = "users"
+
+    class UserRole(enum.Enum):
+        ADMIN = "admin"
+        USER = "user"
+        RESTRICTED = "restricted"
 
     id: Mapped[int] = mapped_column(primary_key=True)
 

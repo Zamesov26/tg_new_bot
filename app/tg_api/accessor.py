@@ -1,6 +1,7 @@
 import json
 import os
 import typing
+from functools import wraps
 from logging import getLogger
 from urllib.parse import urlencode, urljoin
 
@@ -30,6 +31,28 @@ class MediaItemError(Exception):
         super().__init__(message)
 
 
+class TelegramAPIError(Exception):
+    def __init__(self, message: str, error_code: int = None, response=None):
+        super().__init__(f"Telegram API error {error_code}: {message}")
+        self.error_code = error_code
+
+
+def telegram_response_guard(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        result = await func(*args, **kwargs)
+        if not result.get("ok"):
+            raise TelegramAPIError(
+                message=result.get("description", "Unknown error"),
+                error_code=result.get("error_code"),
+                response=result,
+            )
+        return result["result"]
+
+    return wrapper
+
+
+# TODO разбить на несколько классов использовать паттерн фасад
 class TgApiAccessor(BaseAccessor):
     def __init__(self, app: "Application", *args, **kwargs):
         super().__init__(app, *args, **kwargs)
@@ -83,7 +106,6 @@ class TgApiAccessor(BaseAccessor):
             )
         ) as response:
             data = await response.json()
-            print(data)
             return Message.model_validate(data["result"])
 
     async def send_photo(
@@ -219,6 +241,7 @@ class TgApiAccessor(BaseAccessor):
         ) as response:
             return await response.json()
 
+    @telegram_response_guard
     async def edit_message_media(
         self,
         message_id: int,
@@ -344,7 +367,6 @@ class TgApiAccessor(BaseAccessor):
             )
         ) as response:
             data = await response.json()
-            self.logger.info("geted_update")
             for update in data["result"]:
                 self.update_id = int(update["update_id"]) + 1
                 try:

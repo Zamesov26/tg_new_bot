@@ -12,15 +12,18 @@ TextKeyBoard = typing.Annotated[
 
 
 def inline_keyboard_builder(
-    lst: list[list[tuple[str | int, str]]],
+    lst,  # list[list[list[str | int, str, str | None]]],
 ) -> InlineKeyboardMarkup:
     res_keyboard = []
     for row in lst:
         row_keyboard = []
-        for text, callback_data in row:
+        for i in row:
+            if len(i) == 2:
+                i.append("")
+        for text, callback_data, url in row:
             row_keyboard.append(
                 InlineKeyboardButton(
-                    text=str(text), callback_data=callback_data
+                    text=str(text), callback_data=callback_data, url=url
                 )
             )
         res_keyboard.append(row_keyboard)

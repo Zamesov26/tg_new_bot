@@ -6,6 +6,7 @@ from logging import getLogger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.bot_engine.update_context import UpdateContext
+from app.tg_api.accessor import TelegramAPIError
 
 if typing.TYPE_CHECKING:
     from app.tg_api.models import Update
@@ -31,7 +32,7 @@ class BotManager:
     async def life_loop(self):
         while self.running:
             update = await self._queue_updates.get()
-            self.logger.info(update)
+            # self.logger.info(update)
             update_task = asyncio.create_task(self.handle_updates(update))
             update_task.add_done_callback(self._done_callback)
 
@@ -58,7 +59,8 @@ class BotManager:
                 if res:
                     update_object, callback = res
                     update_context.set_update(update_object)
-                    res = await callback(update_context)
-                    if res and not res["ok"]:
-                        self.logger.warning(res)
+                    try:
+                        await callback(update_context)
+                    except TelegramAPIError as err:
+                        self.logger.error(str(err))
                     break

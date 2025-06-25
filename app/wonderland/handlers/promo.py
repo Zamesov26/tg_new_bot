@@ -22,7 +22,7 @@ PROMO_TEMPLATE = """🎉 {title}$
 async def promo(ctx: UpdateContext, image_file: Media | None, *args, **kwargs):
     keyboard = inline_keyboard_builder(
         [
-            [("🔙 Меню", "main_menu")],
+            [["🔙 Меню", "main_menu"]],
         ]
     )
     today = date.today()

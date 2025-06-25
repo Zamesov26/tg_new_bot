@@ -1,5 +1,6 @@
 import typing
 
+from app.admin.accessor import AdminAccessor
 from app.database.database import Database
 
 if typing.TYPE_CHECKING:
@@ -8,7 +9,7 @@ if typing.TYPE_CHECKING:
 
 class Store:
     def __init__(self, app: "Application"):
-        from app.bot_engine.bot_manager import BotManager
+        from app.bot_engine.manager import BotManager
         from app.programs.accessor import ProgramAccessor
         from app.tg_api.accessor import TgApiAccessor
         from app.users.accessor import UserAccessor
@@ -17,6 +18,7 @@ class Store:
         self.bot_manager = BotManager(app)
         # TODO может с этими акцессорами погорячился и они не нужны
         self.user = UserAccessor(app)
+        self.admin = AdminAccessor(app)
         self.program = ProgramAccessor(app)
 
 

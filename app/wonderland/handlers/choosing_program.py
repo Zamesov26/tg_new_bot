@@ -34,11 +34,11 @@ async def programs(
                 short_description=item.short_description,
             )
         )
-        buttons.append((item.title, "program_details:{id}".format(id=item.id)))
+        buttons.append([item.title, "program_details:{id}".format(id=item.id)])
 
     buttons = chunk_list(buttons, 2)
     buttons.append(
-        [("🔙 Назад", "main_menu")],
+        [["🔙 Назад", "main_menu"]],
     )
     keyboard = inline_keyboard_builder(buttons)
 
@@ -62,8 +62,8 @@ async def program_details(ctx: UpdateContext, *args, **kwargs):
     text = program_item.description or program_item.short_description
     keyboard = inline_keyboard_builder(
         [
-            [("✅ Заказать", f"entering_date")],
-            [("❌ Убрать", f"remove_message")],
+            [["✅ Заказать", f"entering_date"]],
+            [["❌ Убрать", f"remove_message"]],
         ]
     )
     # TODO: удалять прошлое сообщение либо хотябы убирать из него клавиатуру.
@@ -88,7 +88,7 @@ async def program_details(ctx: UpdateContext, *args, **kwargs):
     )
     keyboard = inline_keyboard_builder(
         [
-            [("🔙 Программы", f"choosing_program")],
+            [["🔙 Программы", f"choosing_program"]],
         ]
     )
     await ctx.store.tg_api.send_message(
@@ -104,8 +104,8 @@ async def entering_date(ctx: UpdateContext, *args, **kwargs):
     text = "Тут будет описанно торговое предложение и переход к оформлению/заполнение анкеты"
     keyboard = inline_keyboard_builder(
         [
-            [("📝 Оформить", f"TODO")],
-            [("❌ Убрать", f"remove_message")],
+            [["📝 Оформить", f"TODO"]],
+            [["❌ Убрать", f"remove_message"]],
         ]
     )
 
