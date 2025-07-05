@@ -1,6 +1,5 @@
 import typing
 
-from app.admin.accessor import AdminAccessor
 from app.database.database import Database
 
 if typing.TYPE_CHECKING:
@@ -9,8 +8,11 @@ if typing.TYPE_CHECKING:
 
 class Store:
     def __init__(self, app: "Application"):
+        from app.admin.accessor import AdminAccessor
         from app.bot_engine.manager import BotManager
+        from app.fsm.acceessor import FSMAccessor
         from app.programs.accessor import ProgramAccessor
+        from app.questionnaire.accessor import QuestionareAccessor
         from app.tg_api.accessor import TgApiAccessor
         from app.users.accessor import UserAccessor
 
@@ -20,6 +22,8 @@ class Store:
         self.user = UserAccessor(app)
         self.admin = AdminAccessor(app)
         self.program = ProgramAccessor(app)
+        self.fsm = FSMAccessor(app)
+        self.questionare = QuestionareAccessor(app)
 
 
 def setup_store(app: "Application"):

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "programs",
     "medias",
     "promos",
+    "questionare",
 ]
 
 MIDDLEWARE = [

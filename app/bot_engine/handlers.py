@@ -11,12 +11,13 @@ from app.bot_engine.models import (
 
 if typing.TYPE_CHECKING:
     from app.bot_engine.models import UpdateBase
+    from app.bot_engine.update_context import Context
     from app.tg_api.models import Update
 
 
 class BaseHandler:
-    def check(
-        self, update: "Update", *args, **kwargs
+    async def check(
+        self, ctx, *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
         pass
 
@@ -28,11 +29,11 @@ class TextHandler(BaseHandler):
             text_filter = TextFilter()
         self.text_filter = text_filter
 
-    def check(
-        self, update: "Update", *args, **kwargs
+    async def check(
+        self, ctx, *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
-        if update.message and self.text_filter(update):
-            return UpdateMessage(update), self.callback
+        if ctx.update.message and self.text_filter(ctx.update):
+            return UpdateMessage(ctx.update), self.callback
         return None
 
 
@@ -49,16 +50,16 @@ class AddedToChatHandler(BaseHandler):
     def __init__(self, callback: Callable, *args, **kwargs):
         self.callback = callback
 
-    def check(
-        self, update: "Update", *args, **kwargs
+    async def check(
+        self, ctx, *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
         if (
-            update.my_chat_member
-            and update.my_chat_member.old_chat_member.status
+            ctx.update.my_chat_member
+            and ctx.update.my_chat_member.old_chat_member.status
             in ("left", "kicked")
-            and update.my_chat_member.new_chat_member.status == "member"
+            and ctx.update.my_chat_member.new_chat_member.status == "member"
         ):
-            return UpdateMyChatMember(update), self.callback
+            return UpdateMyChatMember(ctx.update), self.callback
 
         return None
 
@@ -68,15 +69,15 @@ class CallbackQueryHandler(BaseHandler):
         self.callback = callback
         self.pattern = pattern
 
-    def check(
-        self, update: "Update", *args, **kwargs
+    async def check(
+        self, ctx, *args, **kwargs
     ) -> tuple["UpdateCallBackQuery", Callable] | None:
         if (
-            update.callback_query
-            and update.callback_query.data
-            and re.match(self.pattern, update.callback_query.data)
+            ctx.update.callback_query
+            and ctx.update.callback_query.data
+            and re.match(self.pattern, ctx.update.callback_query.data)
         ):
-            return UpdateCallBackQuery(update), self.callback
+            return UpdateCallBackQuery(ctx.update), self.callback
         return None
 
 
@@ -90,31 +91,30 @@ class ConversationHandler:
         entry_points: list[BaseHandler],
         states: dict[int | str, list[BaseHandler]],
         fallbacks: list[BaseHandler] | None = None,
-        get_state_from_update: Callable[
-            ["Update"], int | str | None
-        ] = lambda update: None,
     ):
         self.entry_points = entry_points
         self.states = states
         self.fallbacks = fallbacks
-        self.get_state_from_update = get_state_from_update
 
-    def check(
-        self, update: "Update", *args, **kwargs
+    async def check(
+        self, ctx: "Context", *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
-        state = self.get_state_from_update(update)
-
-        if state is None:
+        # TODO вытащить fsm в отдельный слой
+        fsm = await ctx.store.fsm.get_fsm(ctx)
+        if fsm is None or ctx.fsm_state is None:
             for handler in self.entry_points:
-                if res := handler.check(update):
+                if res := await handler.check(ctx):
                     return res
-            return None
-        for handler in self.states.get(state, []):
-            if foo := handler.check(update):
-                return foo
+        if fsm:
+            ctx.fsm_state = fsm.state
+            ctx.fsm_data = fsm.data
+
+            for handler in self.states.get(fsm.state, []):
+                if foo := await handler.check(ctx):
+                    return foo
         if self.fallbacks:
             for handler in self.fallbacks:
-                if foo := handler.check(update):
+                if foo := await handler.check(ctx):
                     return foo
         return None
 

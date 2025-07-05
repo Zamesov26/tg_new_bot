@@ -1,5 +1,5 @@
 from app.actions.user_actions.decorators import log_user_action
-from app.bot_engine.update_context import UpdateContext
+from app.bot_engine.update_context import Context
 from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.decorators import with_image_file
 from app.medias.models import Media
@@ -13,7 +13,7 @@ tg: @svetlana_zamesova"""
 @log_user_action("feedback_input")
 @with_image_file(MESSAGE_IMAGE_PATH)
 async def feedback_input(
-    ctx: UpdateContext, image_file: Media | None, *args, **kwargs
+    ctx: Context, image_file: Media | None, *args, **kwargs
 ):
     keyboard = inline_keyboard_builder(
         [
@@ -24,8 +24,8 @@ async def feedback_input(
     )
     try:
         return await ctx.store.tg_api.edit_message_media(
-            chat_id=ctx.update.get_chat_id(),
-            message_id=ctx.update.get_message_id(),
+            chat_id=ctx.event.get_chat_id(),
+            message_id=ctx.event.get_message_id(),
             file_id=image_file.file_id if image_file else None,
             file_path=MESSAGE_IMAGE_PATH,
             caption=TEXT,
@@ -38,8 +38,8 @@ async def feedback_input(
             ]
         )
         return await ctx.store.tg_api.edit_message_media(
-            chat_id=ctx.update.get_chat_id(),
-            message_id=ctx.update.get_message_id(),
+            chat_id=ctx.event.get_chat_id(),
+            message_id=ctx.event.get_message_id(),
             file_id=image_file.file_id if image_file else None,
             file_path=MESSAGE_IMAGE_PATH,
             caption=TEXT + "\nПрофиль: скрыт",

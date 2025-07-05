@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from app.actions.user_actions.decorators import log_user_action
-from app.bot_engine.update_context import UpdateContext
+from app.bot_engine.update_context import Context
 from app.bot_engine.utils import inline_keyboard_builder
 from app.medias.decorators import with_image_file
 from app.medias.models import Media
@@ -19,9 +19,7 @@ def chunk_list(lst, chunk_size):
 
 @log_user_action("programs")
 @with_image_file(PROGRAM_MESSAGE_IMAGE_PATH)
-async def programs(
-    ctx: UpdateContext, image_file: Media | None, *args, **kwargs
-):
+async def programs(ctx: Context, image_file: Media | None, *args, **kwargs):
     program_list = await ctx.store.program.get_all(ctx.db_session)
     texts = []
     buttons = []
@@ -43,8 +41,8 @@ async def programs(
     keyboard = inline_keyboard_builder(buttons)
 
     answer = await ctx.store.tg_api.edit_message_media(
-        chat_id=ctx.update.get_chat_id(),
-        message_id=ctx.update.get_message_id(),
+        chat_id=ctx.event.get_chat_id(),
+        message_id=ctx.event.get_message_id(),
         file_id=image_file.file_id if image_file else None,
         file_path="images/programs.png",
         caption="\n".join(texts),
@@ -54,8 +52,8 @@ async def programs(
 
 
 @log_user_action("program_details")
-async def program_details(ctx: UpdateContext, *args, **kwargs):
-    _, program = ctx.update.callback_query.data.split(":")
+async def program_details(ctx: Context, *args, **kwargs):
+    _, program = ctx.event.callback_query.data.split(":")
     program_item = await ctx.store.program.get_by_id(
         ctx.db_session, int(program)
     )
@@ -68,7 +66,7 @@ async def program_details(ctx: UpdateContext, *args, **kwargs):
     )
     # TODO: удалять прошлое сообщение либо хотябы убирать из него клавиатуру.
     await ctx.store.tg_api.send_media_group(
-        chat_id=ctx.update.get_chat_id(),
+        chat_id=ctx.event.get_chat_id(),
         media_items=[
             {
                 "type": "photo",
@@ -88,18 +86,19 @@ async def program_details(ctx: UpdateContext, *args, **kwargs):
     )
     keyboard = inline_keyboard_builder(
         [
+            [["🔙 Забронировать", f"order_start"]],
             [["🔙 Программы", f"choosing_program"]],
         ]
     )
     await ctx.store.tg_api.send_message(
-        chat_id=ctx.update.get_chat_id(),
+        chat_id=ctx.event.get_chat_id(),
         text="Возврат к выбору",
         reply_markup=keyboard,
     )
 
 
 @log_user_action("entering_date")
-async def entering_date(ctx: UpdateContext, *args, **kwargs):
+async def entering_date(ctx: Context, *args, **kwargs):
     # TODO
     text = "Тут будет описанно торговое предложение и переход к оформлению/заполнение анкеты"
     keyboard = inline_keyboard_builder(
@@ -110,7 +109,7 @@ async def entering_date(ctx: UpdateContext, *args, **kwargs):
     )
 
     await ctx.store.tg_api.send_message(
-        chat_id=ctx.update.get_chat_id(),
+        chat_id=ctx.event.get_chat_id(),
         text=text,
         reply_markup=keyboard,
     )

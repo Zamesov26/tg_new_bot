@@ -4,6 +4,8 @@ from app.bot_engine.handlers import (
     AddedToChatHandler,
     CallbackQueryHandler,
     CommandHandler,
+    ConversationHandler,
+    TextHandler,
 )
 from app.wonderland.handlers.choosing_program import (
     entering_date,
@@ -15,6 +17,12 @@ from app.wonderland.handlers.feedback_input import feedback_input
 from app.wonderland.handlers.main_menu import (
     main_menu_callback,
     main_menu_command,
+)
+from app.wonderland.handlers.order import (
+    order_next,
+    order_question,
+    order_reload,
+    order_start,
 )
 from app.wonderland.handlers.promo import promo
 from app.wonderland.handlers.viewing_faq import viewing_faq
@@ -54,3 +62,19 @@ def setup_sveta(app: "Application"):
     app.store.bot_manager.handlers.append(
         CallbackQueryHandler(delete_message, pattern="^remove_message")
     )
+
+    order = ConversationHandler(
+        entry_points=[
+            CallbackQueryHandler(order_start, pattern="^order_start")
+        ],
+        states={
+            "question": [
+                TextHandler(order_question),
+            ],
+            "question_confirmation": [
+                CallbackQueryHandler(order_reload, pattern="^question_reload"),
+                CallbackQueryHandler(order_next, pattern="^question_next"),
+            ],
+        },
+    )
+    app.store.bot_manager.handlers.append(order)

@@ -2,14 +2,14 @@ from functools import wraps
 
 from sqlalchemy import select
 
-from app.bot_engine.update_context import UpdateContext
+from app.bot_engine.update_context import Context
 from app.medias.models import Media
 
 
 def with_image_file(file_path: str):
     def decorator(func):
         @wraps(func)
-        async def wrapper(ctx: UpdateContext, *args, **kwargs):
+        async def wrapper(ctx: Context, *args, **kwargs):
             image_file = (
                 await ctx.db_session.execute(
                     select(Media).where(Media.file_path.like(file_path))
