@@ -4,7 +4,12 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from app.base.base_accessor import BaseAccessor
-from app.questionnaire.models import Answer, FormInstance, Question
+from app.questionnaire.models import (
+    Answer,
+    FormInstance,
+    Question,
+    Questionnaire,
+)
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,12 +17,21 @@ if TYPE_CHECKING:
     from app.bot_engine.update_context import Context
 
 
-class QuestionareAccessor(BaseAccessor):
+class QuestionnaireAccessor(BaseAccessor):
+    async def get_questionnaire(
+        self, db_session: "AsyncSession", questionnaire_name: str
+    ):
+        stmt = select(Questionnaire).where(
+            Questionnaire.title == questionnaire_name
+        )
+        questions = await db_session.execute(stmt)
+        return questions.scalar_one_or_none()
+
     async def get_question_ids(
-        self, db_session: "AsyncSession", questionare_id: int
+        self, db_session: "AsyncSession", questionnaire_id: int
     ):
         stmt = select(Question.id).where(
-            Question.questionnaire_id == questionare_id
+            Question.questionnaire_id == questionnaire_id
         )
         questions = await db_session.execute(stmt)
         return questions.scalars()

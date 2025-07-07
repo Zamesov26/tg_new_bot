@@ -7,6 +7,7 @@ from app.bot_engine.handlers import (
     ConversationHandler,
     TextHandler,
 )
+from app.questionnaire.mw import add_questionare
 from app.wonderland.handlers.choosing_program import (
     entering_date,
     program_details,
@@ -65,7 +66,10 @@ def setup_sveta(app: "Application"):
 
     order = ConversationHandler(
         entry_points=[
-            CallbackQueryHandler(order_start, pattern="^order_start")
+            CallbackQueryHandler(
+                add_questionare(order_start, "Бронирование"),
+                pattern="^order_start",
+            )
         ],
         states={
             "question": [

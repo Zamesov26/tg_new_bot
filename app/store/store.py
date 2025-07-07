@@ -12,7 +12,7 @@ class Store:
         from app.bot_engine.manager import BotManager
         from app.fsm.acceessor import FSMAccessor
         from app.programs.accessor import ProgramAccessor
-        from app.questionnaire.accessor import QuestionareAccessor
+        from app.questionnaire.accessor import QuestionnaireAccessor
         from app.tg_api.accessor import TgApiAccessor
         from app.users.accessor import UserAccessor
 
@@ -23,7 +23,7 @@ class Store:
         self.admin = AdminAccessor(app)
         self.program = ProgramAccessor(app)
         self.fsm = FSMAccessor(app)
-        self.questionare = QuestionareAccessor(app)
+        self.questionnaire = QuestionnaireAccessor(app)
 
 
 def setup_store(app: "Application"):

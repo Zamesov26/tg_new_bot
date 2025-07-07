@@ -6,14 +6,25 @@ if typing.TYPE_CHECKING:
     from app.bot_engine.update_context import Context
 
 
-async def order_start(ctx: "Context", *args, **kwargs):
+async def order_start(ctx: "Context", *args, questionnaire: str, **kwargs):
+    questionnaire = await ctx.store.questionnaire.get_questionnaire(
+        ctx.db_session, questionnaire
+    )
+    if not questionnaire:
+        return await ctx.store.tg_api.send_message(
+            chat_id=ctx.update.callback_query.message.chat.id,
+            text="Внутренняя ошибка, попробуйте позже",
+        )
+
     question_ids = list(
-        await ctx.store.questionare.get_question_ids(
-            db_session=ctx.db_session, questionare_id=1
+        await ctx.store.questionnaire.get_question_ids(
+            db_session=ctx.db_session, questionnaire_id=questionnaire.id
         )
     )[::-1]
-    form_instance = await ctx.store.questionare.create_form_instance(
-        db_session=ctx.db_session, user_id=ctx.user_id, questionare_id=1
+    form_instance = await ctx.store.questionnaire.create_form_instance(
+        db_session=ctx.db_session,
+        user_id=ctx.user_id,
+        questionare_id=questionnaire.id,
     )
 
     firs_question = question_ids.pop()
@@ -27,7 +38,7 @@ async def order_start(ctx: "Context", *args, **kwargs):
         new_state="question",
         new_data=new_data,
     )
-    question = await ctx.store.questionare.get_question(
+    question = await ctx.store.questionnaire.get_question(
         db_session=ctx.db_session, question_id=firs_question
     )
     await ctx.store.tg_api.send_message(ctx.chat_id, question.text)
@@ -43,7 +54,7 @@ async def order_question(ctx: "Context", *args, **kwargs):
     ]
     instance_id = ctx.fsm_data.get("instance")
     question_id = ctx.fsm_data.get("current_question")
-    await ctx.store.questionare.create_answer(
+    await ctx.store.questionnaire.create_answer(
         ctx,
         question_id=question_id,
         form_instance_id=instance_id,
@@ -82,12 +93,13 @@ async def order_next(ctx: "Context", *args, **kwargs):
             new_state=None,
             new_data=ctx.fsm_data,
         )
+        keyboard = inline_keyboard_builder([[["🔙 Меню", f"main_menu"]]])
         return await ctx.store.tg_api.send_message(
-            ctx.chat_id, text="Анкета отправлена"
+            ctx.chat_id, text="Анкета отправлена", reply_markup=keyboard
         )
 
     question_id = question_ids.pop()
-    question = await ctx.store.questionare.get_question(
+    question = await ctx.store.questionnaire.get_question(
         db_session=ctx.db_session, question_id=question_id
     )
     await ctx.store.fsm.update_fsm(
