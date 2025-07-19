@@ -86,7 +86,7 @@ async def program_details(ctx: Context, *args, **kwargs):
     )
     keyboard = inline_keyboard_builder(
         [
-            [["🔙 Забронировать", f"order_start"]],
+            [["📅 Забронировать", f"order_start"]],
             [["🔙 Программы", f"choosing_program"]],
         ]
     )

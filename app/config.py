@@ -40,7 +40,7 @@ class DatabaseConfig:
 @dataclass
 class Config:
     admin: AdminConfig
-    session: SessionConfig
+    # session: SessionConfig
     bot: BotConfig
     database: DatabaseConfig
 
@@ -49,9 +49,9 @@ def load_config(config_path: str):
     with open(config_path, "r") as f:
         raw_config = yaml.safe_load(f)
     return Config(
-        session=SessionConfig(
-            key=raw_config["session"]["key"],
-        ),
+        # session=SessionConfig(
+        #     key=raw_config["session"]["key"],
+        # ),
         admin=AdminConfig(
             email=raw_config["admin"]["email"],
             password=raw_config["admin"]["password"],

@@ -45,14 +45,17 @@ async def order_start(ctx: "Context", *args, questionnaire: str, **kwargs):
 
 
 async def order_question(ctx: "Context", *args, **kwargs):
+    instance_id = ctx.fsm_data.get("instance")
     texts = [
         "Ваш ответ:",
         ctx.update.message.text,
     ]
     buttons = [
-        [["Изменить", "question_reload"], ["Далее", "question_next"]],
+        [
+            ["Изменить", f"question_reload:{instance_id}"],
+            ["Далее", f"question_next:{instance_id}"],
+        ],
     ]
-    instance_id = ctx.fsm_data.get("instance")
     question_id = ctx.fsm_data.get("current_question")
     await ctx.store.questionnaire.create_answer(
         ctx,
@@ -75,6 +78,13 @@ async def order_question(ctx: "Context", *args, **kwargs):
 
 
 async def order_next(ctx: "Context", *args, **kwargs):
+    _, callback_instance = ctx.update.callback_query.data.split(":")
+    instance = ctx.fsm_data.get("instance")
+    if not instance or instance != callback_instance:
+        return await ctx.store.tg_api.delete_message(
+            ctx.chat_id,
+            ctx.update.callback_query.message.message_id,
+        )
     await ctx.store.tg_api.edit_message_reply_markup(
         message_id=ctx.update.callback_query.message.message_id,
         chat_id=ctx.update.callback_query.message.chat.id,
@@ -94,6 +104,7 @@ async def order_next(ctx: "Context", *args, **kwargs):
             new_data=ctx.fsm_data,
         )
         keyboard = inline_keyboard_builder([[["🔙 Меню", f"main_menu"]]])
+        # Оповещение админов
         return await ctx.store.tg_api.send_message(
             ctx.chat_id, text="Анкета отправлена", reply_markup=keyboard
         )
@@ -114,12 +125,19 @@ async def order_next(ctx: "Context", *args, **kwargs):
 
 
 async def order_reload(ctx: "Context", *args, **kwargs):
-    await ctx.store.tg_api.delete_message(
-        chat_id=ctx.update.callback_query.message.chat.id,
-        message_id=ctx.update.callback_query.message.message_id,
-    )
+    _, callback_instance = ctx.update.callback_query.data.split(":")
+    instance = ctx.fsm_data.get("instance")
+    if not instance or instance != callback_instance:
+        return await ctx.store.tg_api.delete_message(
+            ctx.chat_id,
+            ctx.update.callback_query.message.message_id,
+        )
     await ctx.store.fsm.update_fsm(
         ctx=ctx,
         new_state="question",
         new_data=ctx.fsm_data,
+    )
+    return await ctx.store.tg_api.delete_message(
+        chat_id=ctx.update.callback_query.message.chat.id,
+        message_id=ctx.update.callback_query.message.message_id,
     )

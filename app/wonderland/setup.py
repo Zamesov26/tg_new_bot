@@ -76,9 +76,15 @@ def setup_sveta(app: "Application"):
                 TextHandler(order_question),
             ],
             "question_confirmation": [
-                CallbackQueryHandler(order_reload, pattern="^question_reload"),
-                CallbackQueryHandler(order_next, pattern="^question_next"),
+                CallbackQueryHandler(order_reload, pattern="^question_reload:"),
+                CallbackQueryHandler(order_next, pattern="^question_next:"),
             ],
         },
     )
     app.store.bot_manager.handlers.append(order)
+    app.store.bot_manager.handlers.append(
+        CallbackQueryHandler(order_reload, pattern="^question_reload:")
+    )
+    app.store.bot_manager.handlers.append(
+        CallbackQueryHandler(order_next, pattern="^question_next:")
+    )
