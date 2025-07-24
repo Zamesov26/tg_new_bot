@@ -65,6 +65,7 @@ async def program_details(ctx: Context, *args, **kwargs):
         ]
     )
     # TODO: удалять прошлое сообщение либо хотябы убирать из него клавиатуру.
+    # TODO: брать из базы
     await ctx.store.tg_api.send_media_group(
         chat_id=ctx.event.get_chat_id(),
         media_items=[
