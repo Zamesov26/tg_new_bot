@@ -88,3 +88,6 @@ def setup_sveta(app: "Application"):
     app.store.bot_manager.handlers.append(
         CallbackQueryHandler(order_next, pattern="^question_next:")
     )
+    app.store.bot_manager.handlers.append(
+        CallbackQueryHandler(only_admin(statistics), pattern="^statistics")
+    )
