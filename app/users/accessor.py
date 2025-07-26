@@ -1,3 +1,4 @@
+from aiocache import SimpleMemoryCache, cached
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -30,6 +31,7 @@ class UserAccessor(BaseAccessor):
         res = await db_session.execute(stms)
         return list(res.scalars().all())
 
+    @cached(ttl=60 * 5, cache=SimpleMemoryCache)
     async def get_or_create(
         self, db_session: AsyncSession, tg_user: User
     ) -> tuple[UserModel, bool]:

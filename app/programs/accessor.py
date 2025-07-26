@@ -1,3 +1,4 @@
+from aiocache import SimpleMemoryCache, cached
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -6,6 +7,7 @@ from app.programs.models import Programs
 
 
 class ProgramAccessor(BaseAccessor):
+    @cached(ttl=60 * 5, cache=SimpleMemoryCache)
     async def get_by_id(
         self, db_session: AsyncSession, program_id: int
     ) -> Programs:
@@ -13,6 +15,7 @@ class ProgramAccessor(BaseAccessor):
         res = await db_session.execute(stmt)
         return res.scalar_one()
 
+    @cached(ttl=60 * 5, cache=SimpleMemoryCache)
     async def get_all(self, db_session: AsyncSession) -> list[Programs]:
         stms = select(Programs).where(Programs.is_active)
         res = await db_session.execute(stms)

@@ -11,6 +11,7 @@ class Store:
         from app.admin.accessor import AdminAccessor
         from app.bot_engine.manager import BotManager
         from app.fsm.acceessor import FSMAccessor
+        from app.medias.accessor import MediaAccessor
         from app.programs.accessor import ProgramAccessor
         from app.questionnaire.accessor import QuestionnaireAccessor
         from app.tg_api.accessor import TgApiAccessor
@@ -18,12 +19,12 @@ class Store:
 
         self.tg_api = TgApiAccessor(app)
         self.bot_manager = BotManager(app)
-        # TODO может с этими акцессорами погорячился и они не нужны
         self.user = UserAccessor(app)
         self.admin = AdminAccessor(app)
         self.program = ProgramAccessor(app)
         self.fsm = FSMAccessor(app)
         self.questionnaire = QuestionnaireAccessor(app)
+        self.media = MediaAccessor(app)
 
 
 def setup_store(app: "Application"):

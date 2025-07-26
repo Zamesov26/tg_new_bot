@@ -145,6 +145,8 @@ class TgApiAccessor(BaseAccessor):
         ) as response:
             return await response.json()
 
+    # TODO: подумать может быть если передается клавиатура может отправить еще одно сообщение
+    # TODO: Но как будто к этому сообщению нужно добавить текст
     async def send_media_group(
         self,
         chat_id: int,

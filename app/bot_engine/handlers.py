@@ -12,7 +12,6 @@ from app.bot_engine.models import (
 if typing.TYPE_CHECKING:
     from app.bot_engine.models import UpdateBase
     from app.bot_engine.update_context import Context
-    from app.tg_api.models import Update
 
 
 class BaseHandler:
@@ -38,7 +37,7 @@ class TextHandler(BaseHandler):
 
 
 class CommandHandler(TextHandler):
-    def __init__(self, callback: Callable, command: str, *args):
+    def __init__(self, callback: Callable, command: str, *args, **kwargs):
         super().__init__(callback)
         # TODO заменить на нормальный фильтр
         self.text_filter = (
@@ -53,19 +52,24 @@ class AddedToChatHandler(BaseHandler):
     async def check(
         self, ctx, *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
-        if (
-            ctx.update.my_chat_member
-            and ctx.update.my_chat_member.old_chat_member.status
-            in ("left", "kicked")
-            and ctx.update.my_chat_member.new_chat_member.status == "member"
-        ):
-            return UpdateMyChatMember(ctx.update), self.callback
+        if ctx.update.my_chat_member:
+            if (
+                ctx.update.my_chat_member
+                and ctx.update.my_chat_member.old_chat_member.status
+                in ("left", "kicked")
+                and ctx.update.my_chat_member.new_chat_member.status == "member"
+            ):
+                return UpdateMyChatMember(ctx.update), self.callback
+            else:
+                ctx.logger.warning(
+                    "С пользователем произошло не описанное событие"
+                )
 
         return None
 
 
 class CallbackQueryHandler(BaseHandler):
-    def __init__(self, callback: Callable, pattern: str = ""):
+    def __init__(self, callback: Callable, pattern: str = "", *args, **kwargs):
         self.callback = callback
         self.pattern = pattern
 
@@ -85,6 +89,8 @@ class ConversationEndError(Exception):
     pass
 
 
+# TODO как будто может быть како-то унииклаьный id и при завершении отправлять уведомление
+# TODO когда завершается конверсэйшн, можно вызывать какой-то callback
 class ConversationHandler:
     def __init__(
         self,
@@ -99,25 +105,26 @@ class ConversationHandler:
     async def check(
         self, ctx: "Context", *args, **kwargs
     ) -> tuple["UpdateBase", Callable] | None:
-        # TODO вытащить fsm в отдельный слой
+        # TODO дергать fsm из контекста заполнение и хранение в нем будет более удобно
         fsm = await ctx.store.fsm.get_fsm(ctx)
+        if fsm:
+            ctx.fsm_state = fsm.state
+            ctx.fsm_data = fsm.data
         if fsm is None or ctx.fsm_state is None:
             for handler in self.entry_points:
                 if res := await handler.check(ctx):
                     return res
-        if fsm:
-            ctx.fsm_state = fsm.state
-            ctx.fsm_data = fsm.data
+            if self.fallbacks:
+                for handler in self.fallbacks:
+                    if foo := await handler.check(ctx):
+                        return foo
 
-            for handler in self.states.get(fsm.state, []):
-                if foo := await handler.check(ctx):
-                    return foo
-        if self.fallbacks:
-            for handler in self.fallbacks:
-                if foo := await handler.check(ctx):
-                    return foo
+        for handler in self.states.get(fsm.state, []):
+            if foo := await handler.check(ctx):
+                return foo
         return None
 
     @classmethod
     def end(cls):
+        # TODO: Вызов callback
         raise ConversationEndError

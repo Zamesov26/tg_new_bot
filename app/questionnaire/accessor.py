@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from aiocache import SimpleMemoryCache, cached
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
 
 
 class QuestionnaireAccessor(BaseAccessor):
+    @cached(ttl=60 * 5, cache=SimpleMemoryCache)
     async def get_questionnaire(
         self, db_session: "AsyncSession", questionnaire_name: str
     ):
@@ -27,6 +29,7 @@ class QuestionnaireAccessor(BaseAccessor):
         questions = await db_session.execute(stmt)
         return questions.scalar_one_or_none()
 
+    @cached(ttl=60 * 5, cache=SimpleMemoryCache)
     async def get_question_ids(
         self, db_session: "AsyncSession", questionnaire_id: int
     ):
@@ -36,6 +39,7 @@ class QuestionnaireAccessor(BaseAccessor):
         questions = await db_session.execute(stmt)
         return questions.scalars()
 
+    @cached(ttl=60 * 5, cache=SimpleMemoryCache)
     async def get_question(self, db_session: "AsyncSession", question_id: int):
         stmt = select(Question).where(Question.id == question_id)
         question = await db_session.execute(stmt)

@@ -42,3 +42,4 @@ typing-extensions==4.11.0
 tzdata==2025.2
 webargs==8.4.0
 yarl==1.9.4
+aiocache==0.12.3
