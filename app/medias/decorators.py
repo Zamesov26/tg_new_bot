@@ -4,7 +4,7 @@ from app.bot_engine.update_context import Context
 from app.medias.models import Media
 
 
-def fallback_image_file(**file_path: str):
+def fallback_image_file(file_path: str):
     def decorator(func):
         @wraps(func)
         async def wrapper(ctx: Context, *args, **kwargs):

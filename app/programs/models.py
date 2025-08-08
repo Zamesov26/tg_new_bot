@@ -13,3 +13,6 @@ class Programs(BaseModel):
     short_description: Mapped[str] = mapped_column(Text, nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    
+    def __repr__(self):
+        return self.title

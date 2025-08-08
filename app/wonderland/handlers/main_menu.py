@@ -11,8 +11,8 @@ TEXT = (
 )
 USER_KEYBOARD = inline_keyboard_builder(
     [
-        [["🎭 Программы и заказ", "choosing_program"]],
-        [["🎁 Акции", "promo"]],
+        [["🎭 Программы и заказ", "paginate:after:programs:0"]],
+        [["🎁 Акции", "paginate:after:promo:0"]],
         [["❓ Частые вопросы", "viewing_faq"]],
         [["📞 Связаться с нами", "contacts"]],
     ]
@@ -45,11 +45,11 @@ async def main_menu_callback(
     # TODO:1 End
 
     answer = await ctx.store.tg_api.edit_message_media(
+        caption=TEXT,
         chat_id=ctx.event.get_chat_id(),
         message_id=ctx.event.get_message_id(),
         file_id=image_file.file_id if image_file else None,
         file_path=MAIN_MENU_IMAGE_PATH,
-        caption=TEXT,
         reply_markup=USER_KEYBOARD,
     )
     return answer
@@ -81,10 +81,10 @@ async def main_menu_command(
     # TODO:1 End
 
     answer = await ctx.store.tg_api.send_photo(
-        chat_id=ctx.event.get_chat_id(),
         caption=TEXT,
-        path_image=MAIN_MENU_IMAGE_PATH,
+        chat_id=ctx.event.get_chat_id(),
         file_id=image_file.file_id if image_file else None,
+        path_image=MAIN_MENU_IMAGE_PATH,
         reply_markup=USER_KEYBOARD,
     )
     return answer

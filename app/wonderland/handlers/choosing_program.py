@@ -80,7 +80,7 @@ async def program_details(ctx: Context, *args, **kwargs):
     keyboard = inline_keyboard_builder(
         [
             [["📅 Забронировать", f"order_start:{program}"]],
-            [["🔙 Программы", f"choosing_program"]],
+            [["🔙 Программы", f"paginate:after:programs:0"]],
         ]
     )
     await ctx.store.tg_api.send_message(

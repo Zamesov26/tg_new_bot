@@ -16,6 +16,7 @@ class Store:
         from app.questionnaire.accessor import QuestionnaireAccessor
         from app.tg_api.accessor import TgApiAccessor
         from app.users.accessor import UserAccessor
+        from app.templates.accessor import TemplateAccessor
 
         self.tg_api = TgApiAccessor(app)
         self.bot_manager = BotManager(app)
@@ -25,6 +26,7 @@ class Store:
         self.fsm = FSMAccessor(app)
         self.questionnaire = QuestionnaireAccessor(app)
         self.media = MediaAccessor(app)
+        self.template = TemplateAccessor(app)
 
 
 def setup_store(app: "Application"):

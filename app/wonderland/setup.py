@@ -1,6 +1,5 @@
 import typing
 
-
 from app.bot_engine.handlers import (
     AddedToChatHandler,
     CallbackQueryHandler,
@@ -8,8 +7,10 @@ from app.bot_engine.handlers import (
     ConversationHandler,
     TextHandler,
 )
-from app.questionnaire.mw import inject_kwargs
-from app.wonderland.handlers.choosing_program import program_details, programs
+from app.pagination.handlers import paginate
+from app.utils.buttons import additional_buttons
+from app.utils.decorators import inject_kwargs
+from app.wonderland.handlers.choosing_program import program_details
 from app.wonderland.handlers.contacts import contacts
 from app.wonderland.handlers.delete_message import delete_message
 from app.wonderland.handlers.main_menu import (
@@ -22,47 +23,32 @@ from app.wonderland.handlers.order import (
     order_reload,
     order_start,
 )
-from app.wonderland.handlers.promo import promo
-from app.wonderland.handlers.viewing_faq import viewing_faq
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application
-    from sqlalchemy.ext.asyncio import AsyncSession
+
 
 def setup_wonderland(app: "Application", prefix_pattern: str = ""):
     # pages
-    db_session: "AsyncSession" = app.database.session()
     app.store.bot_manager.handlers.append(
-        CommandHandler(
-            callback=main_menu_command,
-            command="start",
-        )
+        CommandHandler(callback=main_menu_command, command="start",)
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHandler(
-            callback=main_menu_callback,
-            pattern="^main_menu",
-        )
+        CallbackQueryHandler(callback=main_menu_callback, pattern="^main_menu",)
     )
     app.store.bot_manager.handlers.append(
-        CallbackQueryHandler(
-            callback=contacts,
-            pattern="^contacts",
-        )
+        CallbackQueryHandler(callback=contacts, pattern="^contacts",)
     )
 
     # pagination tables
     app.store.bot_manager.handlers.append(
         CallbackQueryHandler(
-            callback=programs,
-            pattern="^choosing_program",
+            callback=additional_buttons(
+                paginate,
+                buttons=[["меню", "main_menu"]]
+            ),
+            pattern="^paginate:",
         )
-    )
-    app.store.bot_manager.handlers.append(
-        CallbackQueryHandler(callback=promo, pattern="^promo")
-    )
-    app.store.bot_manager.handlers.append(
-        CallbackQueryHandler(callback=viewing_faq, pattern="^viewing_faq")
     )
 
     #  functions
@@ -85,7 +71,7 @@ def setup_wonderland(app: "Application", prefix_pattern: str = ""):
                 callback=inject_kwargs(
                     order_start, questionare_name="Бронирование"
                 ),
-                pattern="^order_start:",
+                pattern="^order_start:str",
             )
         ],
         states={
