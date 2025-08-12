@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 async def paginate(context: "Context", *args, **kwargs):
     command, action, model_name, ref_id = context.update.callback_query.data.split(":")
     model = resolve_model_by_name(model_name)
-    page_size: int = 6
+    page_size: int = 3
     col_count: int = 2
     limit = page_size * col_count
     
