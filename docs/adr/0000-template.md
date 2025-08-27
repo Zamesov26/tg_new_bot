@@ -1,26 +1,25 @@
-# 0000. Какой-то заголовок
+# [Number]. [Title]
 
 ## Дата
-yyyy-mm-dd
-
-## Контекст
-Описание
-
-## Решение
-Что было сделано
-
-## Альтернативы
-
-## Последствия
-
-## Ретроспектива
+[yyyy-mm-dd]
 
 ## Статус
-**Предложено** — решение находится на стадии обсуждения
-**Принято** — решение утверждено и применяется
-**Отклонено** — обсуждалось, но не принято
-**Устарело** — всё ещё используется, но больше не рекомендуется
-**Заменено** — это решение было заменено другим ADR
-**Неактуально** — полностью устарело, более не применяется
-**Реализовано** — принято и полностью внедрено
-**Отложено** — обсуждение или внедрение заморожено
+[Proposed | Accepted | Rejected | Superseded | Deprecated | Implemented]
+
+## Контекст
+[Description of the problem and forces at play]
+
+## Решение
+[The chosen solution and implementation details]
+
+## Альтернативы
+[List of considered alternatives with reasons for rejection]
+
+## Последствия
+[Consequences of the decision, both positive and negative]
+
+## Ретроспектива
+[Post-implementation learnings and observations]
+
+## Связанные ADR
+[References to related decisions]
