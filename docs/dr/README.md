@@ -27,7 +27,7 @@ A Document Record (DR) is a unified document that captures either:
 | [DR-0012](DR-0012.md) | Несоответствия в коде и потенциальные баги | Качество | Open |
 | [DR-0013](DR-0013.md) | Множество незавершенных задач (TODO-комментариев) | Технический долг | Open |
 
-## Категории проблем
+## Problem Categories
 
 - **Безопасность** - Проблемы, связанные с уязвимостями и защитой данных
 - **Ресурсы** - Проблемы с управлением системными ресурсами
@@ -38,7 +38,29 @@ A Document Record (DR) is a unified document that captures either:
 - **Поддержка** - Проблемы, затрудняющие поддержку кода
 - **Производительность** - Проблемы, влияющие на быстродействие приложения
 
-## Статусы
+## Status Definitions
 
 - **Open** - Проблема идентифицирована и задокументирована
 - **Closed** - Проблема решена (файлы перемещаются в /closed/)
+
+## Project Context
+
+The sveta_bot project is a Telegram bot application built with Python, aiohttp, and Django. It provides functionality for:
+- Managing programs and events
+- Handling user bookings and registrations
+- Providing interactive FAQ and promotional materials
+- Administering content through a Django admin panel
+
+The project currently faces several technical challenges that are documented in these DRs. Addressing these issues will improve the overall quality, security, and maintainability of the application.
+
+## Prioritization Guidelines
+
+When addressing DRs, consider the following prioritization:
+
+1. **Security issues** (DR-0001, DR-0002) - Highest priority
+2. **Stability issues** (DR-0006) - High priority
+3. **Architecture issues** (DR-0004) - High priority
+4. **Performance issues** (DR-0007) - Medium priority
+5. **Quality issues** (DR-0005, DR-0010, DR-0012) - Medium priority
+6. **Documentation issues** (DR-0009) - Medium priority
+7. **Maintenance issues** (DR-0003, DR-0008, DR-0011, DR-0013) - Lower priority

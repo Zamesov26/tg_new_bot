@@ -27,7 +27,7 @@ See [0000-template.md](0000-template.md) for the template used to create new ADR
 | [0010](0010-caching-strategy.md) | Стратегия кэширования | Предложено |
 | [0011](0011-message-queue-choice.md) | Выбор очереди сообщений | Принято |
 
-## Statuses
+## Status Definitions
 
 - **Предложено** — решение находится на стадии обсуждения
 - **Принято** — решение утверждено и применяется
@@ -37,3 +37,57 @@ See [0000-template.md](0000-template.md) for the template used to create new ADR
 - **Неактуально** — полностью устарело, более не применяется
 - **Реализовано** — принято и полностью внедрено
 - **Отложено** — обсуждение или внедрение заморожено
+
+## Project Architecture Overview
+
+The sveta_bot project follows a modular architecture with clear separation of concerns:
+
+### Core Components
+
+1. **Telegram Bot Engine** (`app/bot_engine/`)
+   - Handles incoming updates from Telegram
+   - Manages the update processing queue
+   - Routes updates to appropriate handlers
+
+2. **Telegram API Accessor** (`app/tg_api/`)
+   - Provides interface to Telegram Bot API
+   - Handles message sending, media operations, and callback queries
+   - Implements polling mechanism for receiving updates
+
+3. **Web Application** (`app/web/`)
+   - Built with aiohttp for asynchronous web handling
+   - Contains custom Application, Request, and View classes
+   - Integrates all components together
+
+4. **Database Layer** (`app/database/`)
+   - Uses SQLAlchemy 2.0 with asyncpg for PostgreSQL
+   - Implements async session management
+   - Provides base model class for all entities
+
+5. **Store Layer** (`app/store/`)
+   - Centralized access point for all application components
+   - Contains accessors for each domain entity
+   - Manages component lifecycle (start/stop)
+
+6. **Domain Modules**
+   - **Users** (`app/users/`): User management and authentication
+   - **Programs** (`app/programs/`): Program catalog and management
+   - **Media** (`app/medias/`): Media content handling
+   - **Promotions** (`app/promo/`): Promotional materials
+   - **Questionnaire** (`app/questionnaire/`): User questionnaire system
+   - **FSM** (`app/fsm/`): Finite State Machine for user states
+   - **Admin** (`app/admin/`): Administrative user management
+
+7. **Admin Panel** (`admin_panel/`)
+   - Django-based web interface for content management
+   - Separate apps for users, programs, media, promotions, and questionnaires
+   - Uses the same database as the main application
+
+### Data Flow
+
+1. Telegram sends updates to the bot via webhooks or polling
+2. TgApiAccessor receives and validates updates
+3. BotManager queues updates and processes them asynchronously
+4. Handlers process updates based on business logic
+5. Database accessors handle data persistence/retrieval
+6. Responses are sent back through the Telegram API
