@@ -39,7 +39,6 @@ sveta_bot - это Telegram-бот, разработанный на Python с и
 
 - **Интеграции**:
   - PostgreSQL для хранения данных
-  - RabbitMQ для очередей сообщений
   - Redis для кэширования
 
 ## Структура проекта
@@ -67,8 +66,6 @@ sveta_bot - это Telegram-бот, разработанный на Python с и
 │   └── tdr/              # Technical Debt Records
 ├── migrations/            # Миграции базы данных
 ├── etc/                  # Конфигурационные файлы
-├── message_service/      # Сервис обработки сообщений
-├── rabbitmq/             # Примеры работы с RabbitMQ
 └── tests/                # Тесты (TODO: Создать структуру тестов)
 ```
 
@@ -78,7 +75,6 @@ sveta_bot - это Telegram-бот, разработанный на Python с и
 
 - Python 3.12+
 - PostgreSQL
-- RabbitMQ (опционально)
 - Redis (опционально)
 
 ### Установка
@@ -116,12 +112,6 @@ python main.py
 ```bash
 cd admin_panel
 python manage.py runserver
-```
-
-3. Запуск сервиса сообщений (если требуется):
-```bash
-cd message_service
-python run.py
 ```
 
 ## Примеры использования
