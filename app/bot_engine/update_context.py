@@ -17,6 +17,7 @@ class Context:
     fsm_state: str | int | None = None
     fsm_data: dict | None = None
     user: typing.Union["User", None]
+    additional_keyboard: list[list] | None = None
 
     def __init__(
         self,

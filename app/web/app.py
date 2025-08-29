@@ -6,7 +6,7 @@ from app.config import Config, setup_config
 from app.database.database import Database
 from app.store import Store, setup_store
 from app.web.logger import setup_logging
-from app.wonderland.setup import setup_sveta
+from app.wonderland.setup import setup_wonderland
 
 __all__ = ("Application",)
 
@@ -48,5 +48,5 @@ def setup_app(config_path: str) -> Application:
     setup_logging(app)
     setup_config(app, config_path)
     setup_store(app)
-    setup_sveta(app)
+    setup_wonderland(app)
     return app

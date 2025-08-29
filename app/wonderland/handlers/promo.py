@@ -5,11 +5,11 @@ from sqlalchemy import or_, select
 from app.actions.user_actions.decorators import log_user_action
 from app.bot_engine.update_context import Context
 from app.bot_engine.utils import inline_keyboard_builder
-from app.medias.decorators import with_image_file
+from app.medias.decorators import fallback_image_file
 from app.medias.models import Media
 from app.promo.models import Promo
 
-MESSAGE_IMAGE_PATH = "images/promo.png"
+PROMO_IMAGE_PATH = "images/promo.png"
 PROMO_TEMPLATE = """🎉 {title}$
 💸 {new_price}$
 📝{short_description}
@@ -18,7 +18,7 @@ PROMO_TEMPLATE = """🎉 {title}$
 
 
 @log_user_action("promo")
-@with_image_file(MESSAGE_IMAGE_PATH)
+@fallback_image_file(file_path=PROMO_IMAGE_PATH)
 async def promo(ctx: Context, image_file: Media | None, *args, **kwargs):
     keyboard = inline_keyboard_builder(
         [
@@ -39,7 +39,7 @@ async def promo(ctx: Context, image_file: Media | None, *args, **kwargs):
             message_id=ctx.event.get_message_id(),
             caption="Нет действующийх акций",
             file_id=image_file.file_id if image_file else None,
-            file_path=MESSAGE_IMAGE_PATH,
+            file_path=PROMO_IMAGE_PATH,
             reply_markup=keyboard,
         )
         return answer
@@ -60,7 +60,7 @@ async def promo(ctx: Context, image_file: Media | None, *args, **kwargs):
         message_id=ctx.event.get_message_id(),
         caption="---------------------------\n".join(texts),
         file_id=image_file.file_id if image_file else None,
-        file_path=MESSAGE_IMAGE_PATH,
+        file_path=PROMO_IMAGE_PATH,
         reply_markup=keyboard,
     )
     return answer

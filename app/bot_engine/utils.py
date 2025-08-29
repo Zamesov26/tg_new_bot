@@ -28,22 +28,3 @@ def inline_keyboard_builder(
             )
         res_keyboard.append(row_keyboard)
     return InlineKeyboardMarkup(inline_keyboard=res_keyboard)
-
-
-def inline_keyboard_game_builder(
-    lst: TextKeyBoard, prefix="", sep=":", postfix=""
-):
-    res_keyboard = []
-    for row in lst:
-        row_keyboard = []
-        for col in row:
-            if isinstance(col, int | str):
-                text = str(col)
-                callback_data = prefix + sep + str(col)
-                if postfix:
-                    callback_data += sep + postfix
-            else:
-                text, callback_data = col
-            row_keyboard.append((str(text), callback_data))
-        res_keyboard.append(row_keyboard)
-    return inline_keyboard_builder(res_keyboard)

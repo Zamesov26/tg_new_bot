@@ -6,11 +6,13 @@ if typing.TYPE_CHECKING:
     from app.bot_engine.update_context import Context
 
 
-async def order_start(ctx: "Context", *args, questionnaire: str, **kwargs):
-    questionnaire = await ctx.store.questionnaire.get_questionnaire(
-        ctx.db_session, questionnaire
+async def order_start(ctx: "Context", *args, questionare_name: str, **kwargs):
+    _, program_id = ctx.update.callback_query.data.split(":")
+
+    questionare_name = await ctx.store.questionnaire.get_questionnaire(
+        ctx.db_session, questionare_name
     )
-    if not questionnaire:
+    if not questionare_name:
         return await ctx.store.tg_api.send_message(
             chat_id=ctx.update.callback_query.message.chat.id,
             text="Внутренняя ошибка, попробуйте позже",
@@ -18,13 +20,13 @@ async def order_start(ctx: "Context", *args, questionnaire: str, **kwargs):
 
     question_ids = list(
         await ctx.store.questionnaire.get_question_ids(
-            db_session=ctx.db_session, questionnaire_id=questionnaire.id
+            db_session=ctx.db_session, questionnaire_id=questionare_name.id
         )
     )[::-1]
     form_instance = await ctx.store.questionnaire.create_form_instance(
         db_session=ctx.db_session,
         user_id=ctx.user_id,
-        questionare_id=questionnaire.id,
+        questionare_id=questionare_name.id,
     )
 
     firs_question = question_ids.pop()
@@ -41,7 +43,7 @@ async def order_start(ctx: "Context", *args, questionnaire: str, **kwargs):
     question = await ctx.store.questionnaire.get_question(
         db_session=ctx.db_session, question_id=firs_question
     )
-    await ctx.store.tg_api.send_message(ctx.chat_id, question.text)
+    return await ctx.store.tg_api.send_message(ctx.chat_id, question.text)
 
 
 async def order_question(ctx: "Context", *args, **kwargs):
@@ -81,6 +83,7 @@ async def order_next(ctx: "Context", *args, **kwargs):
     _, callback_instance = ctx.update.callback_query.data.split(":")
     instance = ctx.fsm_data.get("instance")
     if not instance or instance != callback_instance:
+        # находимся в другом контексте удаляем старое сообщение
         return await ctx.store.tg_api.delete_message(
             ctx.chat_id,
             ctx.update.callback_query.message.message_id,

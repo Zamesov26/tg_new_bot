@@ -12,6 +12,8 @@ class Questionnaire(BaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String)
+    # table
+    # table_row_id
 
     instances: Mapped[list["FormInstance"]] = relationship(
         back_populates="questionnaire"

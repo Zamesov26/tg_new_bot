@@ -4,20 +4,9 @@ from os.path import abspath, dirname
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from app.actions import *
 from app.config import load_config
 from app.database.sqlalchemy_base import BaseModel
-from app.fsm.models import FSM
-from app.medias.models import Media
-from app.programs.models import Programs
-from app.promo.models import Promo
-from app.questionnaire.models import (
-    Answer,
-    FormInstance,
-    Question,
-    Questionnaire,
-)
-from app.users.models import User
+from app.database.models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
