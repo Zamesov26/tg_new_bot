@@ -1,6 +1,6 @@
 # Product Backlog
 
-This document contains the product backlog for the sveta_bot project, including features, improvements, and technical debt items.
+This document contains the product backlog for the wonderland project, including features, improvements, and technical debt items.
 
 ## High Priority Items
 

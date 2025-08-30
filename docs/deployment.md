@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes how to deploy the sveta_bot application to a production environment. The application consists of two main components:
+This document describes how to deploy the wonderland application to a production environment. The application consists of two main components:
 
 1. **Telegram Bot Service** - The core bot application
 2. **Admin Panel** - Django-based administration interface
@@ -56,16 +56,16 @@ sudo apt install certbot python3-certbot-nginx
 sudo -u postgres psql
 
 # Create database and user
-CREATE DATABASE sveta_bot;
+CREATE DATABASE wonderland;
 CREATE USER sveta_user WITH PASSWORD 'your_secure_password';
-GRANT ALL PRIVILEGES ON DATABASE sveta_bot TO sveta_user;
+GRANT ALL PRIVILEGES ON DATABASE wonderland TO sveta_user;
 ALTER USER sveta_user CREATEDB;
 \q
 ```
 
 ### 3. Configure Application
 
-Create the configuration file at `/etc/sveta_bot/config.yml`:
+Create the configuration file at `/etc/wonderland/config.yml`:
 
 ```yaml
 debug: false
@@ -74,7 +74,7 @@ database:
   port: 5432
   user: sveta_user
   password: your_secure_password
-  database: sveta_bot
+  database: wonderland
 web:
   host: 127.0.0.1
   port: 8000
@@ -97,15 +97,15 @@ sentry:
 #### Create Service User
 
 ```bash
-sudo useradd -r -s /bin/false sveta_bot
+sudo useradd -r -s /bin/false wonderland
 ```
 
 #### Deploy Application Code
 
 ```bash
 # Create application directory
-sudo mkdir -p /opt/sveta_bot
-sudo chown sveta_bot:sveta_bot /opt/sveta_bot
+sudo mkdir -p /opt/wonderland
+sudo chown wonderland:wonderland /opt/wonderland
 
 # Copy application files (or clone from repository)
 # This step depends on your deployment method
@@ -115,38 +115,38 @@ sudo chown sveta_bot:sveta_bot /opt/sveta_bot
 
 ```bash
 # Switch to application directory
-cd /opt/sveta_bot
+cd /opt/wonderland
 
 # Install Poetry
 pip3 install poetry
 
 # Install application dependencies
-sudo -u sveta_bot poetry install --no-dev
+sudo -u wonderland poetry install --no-dev
 ```
 
 #### Run Database Migrations
 
 ```bash
 # Run migrations
-sudo -u sveta_bot alembic upgrade head
+sudo -u wonderland alembic upgrade head
 ```
 
 #### Create Systemd Service
 
-Create `/etc/systemd/system/sveta_bot.service`:
+Create `/etc/systemd/system/wonderland.service`:
 
 ```ini
 [Unit]
-Description=sveta_bot Telegram Bot
+Description=wonderland Telegram Bot
 After=network.target postgresql.service
 
 [Service]
 Type=simple
-User=sveta_bot
-Group=sveta_bot
-WorkingDirectory=/opt/sveta_bot
-Environment=PATH=/opt/sveta_bot/.venv/bin
-ExecStart=/opt/sveta_bot/.venv/bin/python main.py
+User=wonderland
+Group=wonderland
+WorkingDirectory=/opt/wonderland
+Environment=PATH=/opt/wonderland/.venv/bin
+ExecStart=/opt/wonderland/.venv/bin/python main.py
 Restart=always
 RestartSec=10
 
@@ -161,13 +161,13 @@ WantedBy=multi-user.target
 sudo systemctl daemon-reload
 
 # Enable service to start on boot
-sudo systemctl enable sveta_bot.service
+sudo systemctl enable wonderland.service
 
 # Start the service
-sudo systemctl start sveta_bot.service
+sudo systemctl start wonderland.service
 
 # Check service status
-sudo systemctl status sveta_bot.service
+sudo systemctl status wonderland.service
 ```
 
 ### 2. Deploy Admin Panel
@@ -178,16 +178,16 @@ Create `/etc/systemd/system/sveta_admin.service`:
 
 ```ini
 [Unit]
-Description=sveta_bot Admin Panel
+Description=wonderland Admin Panel
 After=network.target postgresql.service
 
 [Service]
 Type=simple
-User=sveta_bot
-Group=sveta_bot
-WorkingDirectory=/opt/sveta_bot/admin_panel
-Environment=PATH=/opt/sveta_bot/.venv/bin
-ExecStart=/opt/sveta_bot/.venv/bin/python manage.py runserver 127.0.0.1:8001
+User=wonderland
+Group=wonderland
+WorkingDirectory=/opt/wonderland/admin_panel
+Environment=PATH=/opt/wonderland/.venv/bin
+ExecStart=/opt/wonderland/.venv/bin/python manage.py runserver 127.0.0.1:8001
 Restart=always
 RestartSec=10
 
@@ -215,7 +215,7 @@ sudo systemctl status sveta_admin.service
 
 ### Configure Reverse Proxy
 
-Create `/etc/nginx/sites-available/sveta_bot`:
+Create `/etc/nginx/sites-available/wonderland`:
 
 ```nginx
 server {
@@ -252,14 +252,14 @@ server {
 
     # Static files
     location /static/ {
-        alias /opt/sveta_bot/admin_panel/static/;
+        alias /opt/wonderland/admin_panel/static/;
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
 
     # Media files
     location /media/ {
-        alias /opt/sveta_bot/admin_panel/media/;
+        alias /opt/wonderland/admin_panel/media/;
         expires 1y;
         add_header Cache-Control "public";
     }
@@ -269,7 +269,7 @@ server {
 Enable the site:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/sveta_bot /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/wonderland /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -286,38 +286,38 @@ sudo certbot --nginx -d yourdomain.com
 
 ### Log Files
 
-- Telegram Bot logs: `/var/log/sveta_bot/`
+- Telegram Bot logs: `/var/log/wonderland/`
 - Admin Panel logs: `/var/log/sveta_admin/`
 - Nginx logs: `/var/log/nginx/`
 
 ### Log Rotation
 
-Create `/etc/logrotate.d/sveta_bot`:
+Create `/etc/logrotate.d/wonderland`:
 
 ```bash
-/var/log/sveta_bot/*.log {
+/var/log/wonderland/*.log {
     daily
     missingok
     rotate 52
     compress
     delaycompress
     notifempty
-    create 644 sveta_bot sveta_bot
+    create 644 wonderland wonderland
     postrotate
-        systemctl reload sveta_bot.service > /dev/null 2>&1 || true
+        systemctl reload wonderland.service > /dev/null 2>&1 || true
     endscript
 }
 ```
 
 ### Health Checks
 
-Create a health check script at `/opt/sveta_bot/health_check.sh`:
+Create a health check script at `/opt/wonderland/health_check.sh`:
 
 ```bash
 #!/bin/bash
 
 # Check if services are running
-if ! systemctl is-active --quiet sveta_bot.service; then
+if ! systemctl is-active --quiet wonderland.service; then
     echo "Telegram bot service is not running"
     exit 1
 fi
@@ -345,26 +345,26 @@ exit 0
 Make it executable:
 
 ```bash
-chmod +x /opt/sveta_bot/health_check.sh
+chmod +x /opt/wonderland/health_check.sh
 ```
 
 ## Backup and Recovery
 
 ### Database Backup
 
-Create a backup script at `/opt/sveta_bot/backup.sh`:
+Create a backup script at `/opt/wonderland/backup.sh`:
 
 ```bash
 #!/bin/bash
 
-BACKUP_DIR="/var/backups/sveta_bot"
+BACKUP_DIR="/var/backups/wonderland"
 DATE=$(date +%Y%m%d_%H%M%S)
 
 # Create backup directory
 mkdir -p $BACKUP_DIR
 
 # Backup database
-pg_dump -U sveta_user -h localhost sveta_bot > $BACKUP_DIR/db_backup_$DATE.sql
+pg_dump -U sveta_user -h localhost wonderland > $BACKUP_DIR/db_backup_$DATE.sql
 
 # Compress backup
 gzip $BACKUP_DIR/db_backup_$DATE.sql
@@ -377,7 +377,7 @@ Schedule backups with cron:
 
 ```bash
 # Add to crontab
-0 2 * * * /opt/sveta_bot/backup.sh
+0 2 * * * /opt/wonderland/backup.sh
 ```
 
 ## Maintenance
@@ -386,29 +386,29 @@ Schedule backups with cron:
 
 1. Stop services:
    ```bash
-   sudo systemctl stop sveta_bot.service
+   sudo systemctl stop wonderland.service
    sudo systemctl stop sveta_admin.service
    ```
 
 2. Update code:
    ```bash
-   cd /opt/sveta_bot
+   cd /opt/wonderland
    git pull origin main
-   ```
+   ``wonderland`
 
 3. Update dependencies:
    ```bash
-   sudo -u sveta_bot poetry install --no-dev
+   sudo -u wonderland poetry install --no-dev
    ```
 
 4. Run migrations:
    ```bash
-   sudo -u sveta_bot alembic upgrade head
+   sudo -u wonderland alembic upgrade head
    ```
 
 5. Start services:
    ```bash
-   sudo systemctl start sveta_bot.service
+   sudo systemctl start wonderland.service
    sudo systemctl start sveta_admin.service
    ```
 
@@ -418,11 +418,11 @@ Set up monitoring with systemd:
 
 ```bash
 # Check service status
-sudo systemctl status sveta_bot.service
+sudo systemctl status wonderland.service
 sudo systemctl status sveta_admin.service
 
 # View logs
-sudo journalctl -u sveta_bot.service -f
+sudo journalctl -u wonderland.service -f
 sudo journalctl -u sveta_admin.service -f
 ```
 
@@ -431,7 +431,7 @@ sudo journalctl -u sveta_admin.service -f
 ### Common Issues
 
 1. **Service won't start**:
-   - Check logs: `sudo journalctl -u sveta_bot.service`
+   - Check logs: `sudo journalctl -u wonderland.service`
    - Verify configuration file permissions
    - Check database connectivity
 
@@ -453,15 +453,15 @@ sudo journalctl -u sveta_admin.service -f
 
 ```bash
 # Check service status
-sudo systemctl status sveta_bot.service
+sudo systemctl status wonderland.service
 sudo systemctl status sveta_admin.service
 
 # Restart services
-sudo systemctl restart sveta_bot.service
+sudo systemctl restart wonderland.service
 sudo systemctl restart sveta_admin.service
 
 # View logs
-sudo journalctl -u sveta_bot.service -f
+sudo journalctl -u wonderland.service -f
 sudo journalctl -u sveta_admin.service -f
 
 # Check if ports are listening

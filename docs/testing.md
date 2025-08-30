@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the testing strategy, tools, and practices for the sveta_bot project. The project currently lacks a comprehensive test suite, which is documented as a technical debt item (DR-0005).
+This document describes the testing strategy, tools, and practices for the wonderland project. The project currently lacks a comprehensive test suite, which is documented as a technical debt item (DR-0005).
 
 ## Current State
 

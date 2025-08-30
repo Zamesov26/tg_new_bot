@@ -1,10 +1,10 @@
-# sveta_bot Documentation
+# wonderland Documentation
 
-Welcome to the comprehensive documentation for sveta_bot, a Telegram bot application built with Python, aiohttp, and Django.
+Welcome to the comprehensive documentation for wonderland, a Telegram bot application built with Python, aiohttp, and Django.
 
 ## Project Overview
 
-sveta_bot is a Telegram bot application designed for managing programs, handling user bookings, and interacting with users through Telegram. It features both a Telegram bot interface for end users and a Django admin panel for content management.
+wonderland is a Telegram bot application designed for managing programs, handling user bookings, and interacting with users through Telegram. It features both a Telegram bot interface for end users and a Django admin panel for content management.
 
 Key features include:
 - Interactive Telegram bot with menu navigation

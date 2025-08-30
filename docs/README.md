@@ -1,6 +1,6 @@
 # Documentation
 
-This directory contains all documentation for the sveta_bot project.
+This directory contains all documentation for the wonderland project.
 
 ## Documentation Structure
 

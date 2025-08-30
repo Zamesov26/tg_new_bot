@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides instructions for using the sveta_bot Telegram bot and admin panel. The bot allows users to interact with programs and services, while the admin panel provides tools for managing content and users.
+This guide provides instructions for using the wonderland Telegram bot and admin panel. The bot allows users to interact with programs and services, while the admin panel provides tools for managing content and users.
 
 ## For End Users (Telegram Bot)
 

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**sveta_bot** is a Telegram bot application built with Python, aiohttp, and Django. The project provides a comprehensive solution for managing programs, handling user bookings, and interacting with users through Telegram. It features both a Telegram bot interface for end users and a Django admin panel for content management.
+**wonderland** is a Telegram bot application built with Python, aiohttp, and Django. The project provides a comprehensive solution for managing programs, handling user bookings, and interacting with users through Telegram. It features both a Telegram bot interface for end users and a Django admin panel for content management.
 
 ### Key Features
 - Telegram bot with interactive navigation menu
@@ -80,7 +80,7 @@ The project follows a modular architecture with clear separation of concerns:
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd sveta_bot
+   cd wonderland
    ```
 
 2. **Install dependencies:**

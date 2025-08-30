@@ -1,6 +1,6 @@
 # Document Records (DR)
 
-This directory contains unified Document Records (DRs) for the sveta_bot project. Each DR combines Problem Description Records (PDR) and Technical Debt Records (TDR) into a single comprehensive document.
+This directory contains unified Document Records (DRs) for the wonderland project. Each DR combines Problem Description Records (PDR) and Technical Debt Records (TDR) into a single comprehensive document.
 
 ## What is a DR?
 
@@ -45,7 +45,7 @@ A Document Record (DR) is a unified document that captures either:
 
 ## Project Context
 
-The sveta_bot project is a Telegram bot application built with Python, aiohttp, and Django. It provides functionality for:
+The wonderland project is a Telegram bot application built with Python, aiohttp, and Django. It provides functionality for:
 - Managing programs and events
 - Handling user bookings and registrations
 - Providing interactive FAQ and promotional materials

@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADR)
 
-This directory contains Architecture Decision Records (ADRs) for the sveta_bot project. Each ADR documents a significant architectural decision made during the project's development.
+This directory contains Architecture Decision Records (ADRs) for the wonderland project. Each ADR documents a significant architectural decision made during the project's development.
 
 ## What is an ADR?
 
@@ -40,7 +40,7 @@ See [0000-template.md](0000-template.md) for the template used to create new ADR
 
 ## Project Architecture Overview
 
-The sveta_bot project follows a modular architecture with clear separation of concerns:
+The wonderland project follows a modular architecture with clear separation of concerns:
 
 ### Core Components
 

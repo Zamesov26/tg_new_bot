@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides information for developers working on the sveta_bot project. It covers the project structure, development environment setup, coding standards, and contribution guidelines.
+This guide provides information for developers working on the wonderland project. It covers the project structure, development environment setup, coding standards, and contribution guidelines.
 
 ## Project Structure
 
@@ -72,7 +72,7 @@ This guide provides information for developers working on the sveta_bot project.
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd sveta_bot
+   cd wonderland
    ```
 
 2. **Install Poetry** (if not already installed):

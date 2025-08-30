@@ -2,7 +2,7 @@
 
 ## Overview
 
-The sveta_bot project has two main API interfaces:
+The wonderland project has two main API interfaces:
 
 1. **Telegram Bot API** - Used for communication with Telegram users
 2. **Admin Panel API** - Django REST API for administrative functions

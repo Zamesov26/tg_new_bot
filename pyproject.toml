@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sveta_bot"
+name = "wonderland"
 version = "0.1.0"
 description = ""
 authors = ["Oleg Zamesov <o.zamesov@yandex.ru>"]

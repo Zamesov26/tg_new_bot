@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-Thank you for your interest in contributing to sveta_bot! This document provides guidelines and best practices for contributing to the project.
+Thank you for your interest in contributing to wonderland! This document provides guidelines and best practices for contributing to the project.
 
 ## How to Contribute
 
