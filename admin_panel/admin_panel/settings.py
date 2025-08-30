@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "medias",
     "promos",
     "questionare",
+    "page_templates",
 ]
 
 MIDDLEWARE = [
