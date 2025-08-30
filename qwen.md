@@ -135,7 +135,7 @@ database:
   port: 5432
   user: postgres 
   password: postgres
-  database: sveta
+  database: wonderland
 web:
   host: 127.0.0.1
   port: 8000
